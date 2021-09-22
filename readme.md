@@ -12,5 +12,6 @@ for the preamble, which common to all of them and is located in the top-level
 folder.
 
 ### Link to compiled versions of the notes:
- - [Homotopy theory](https://gitlab.com/ddorn/master/-/jobs/1612376679/artifacts/file/homotopy/homotopy.pdf)
- - [Analysis on groups]()
+ - [Algebraic topology](https://gitlab.com/ddorn/master/-/jobs/artifacts/master/raw/homotopy/homotopy.pdf?job=pdf)
+ - [Bachelor Project](https://gitlab.com/ddorn/master/-/jobs/artifacts/master/raw/analysis-group/analysis-group.pdf?job=pdf)
+
