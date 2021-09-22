@@ -1,0 +1,17 @@
+ML_course/
+*.out
+*.toc
+*.mp4
+*.log
+*.aux
+*.fdb_latexmk
+*.gz
+*.fls
+*.pdf
+*.dvi
+.vscode
+*.tdo
+*.bbl
+*.bcf
+*.blg
+*.xml

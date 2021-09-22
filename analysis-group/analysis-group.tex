@@ -1,0 +1,136 @@
+\input{../preambule.tex}
+
+
+\title{Analysis on Groups}
+\author{Diego Dorn \\ Lectures notes from Nicolas Monod}
+\date{Automn 2021}
+
+\newcommand{\Isom}{\mathrm{Isom}}
+\newcommand{\acts}{\circlearrowright}
+
+\begin{document}
+    \maketitle
+
+    % \tableofcontents
+
+    \section{Means and amenable actions}
+
+    \paragraph{Setting} $G$ is a group, 
+    $X$ is a $G$-set, that is, a set with an action of $G$, 
+    \[
+        \func{a}{G \times X}{X}{(g, x)}{gx}
+    \]
+    That verify \begin{itemize}
+        \item $\forall x, ex = x$
+        \item $\forall x \in X, \forall g, h \in G, g(hx) = (gh)(x)$
+    \end{itemize}
+
+    \begin{example}
+        $X = \R^3$ and $G = \Isom(\R^3)$
+    \end{example}
+
+    \begin{definition}
+        A \emph{mean} on a set $X$ is a map 
+        $\mu: \Pp(X) \to [0, 1]$
+        such that \begin{itemize}
+            \item $\mu(X) = 1$
+            \item $\forall A, B \subseteq X$ disjoint, 
+                $\mu(A \cup B) = \mu(A) + \mu(B)$.
+        \end{itemize}
+    \end{definition}
+
+    \begin{exercise}
+        Prove that 
+        \begin{enumerate}
+            \item $\mu(\emptyset) = 0$
+            \item $\forall A, B, \mu(A \cup B) = \mu(A) + \mu(B) - \mu(A \cap B)$.
+            \item $\forall n, \forall A_1, \dots A_n \subseteq X$ disjoint,
+                $\mu(\bigcup_{i = 1}^n A_i) = \sum_{i = 1}^n \mu(A_i)$.
+            \item If $A \subset B$ then $\mu(A) \leq \mu(B)$.
+        \end{enumerate}
+    \end{exercise}
+
+    \begin{definition}
+        The action $G \acts X$ is called \emph{amenable}
+        if there exists a $G$-invariant mean on $X$
+    \end{definition}
+
+    Explocitly, \[
+        \forall g \in G~
+        \forall A \subseteq X,
+        \mu(A) = \mu(gA). 
+    \]
+    This prevents and "Banach-Tarski" paradox in $X$ with respect to $G$.
+
+    \subsection{More abstract means}
+
+    Let $\Mm(X)$ be the set of means on $X$.
+    \begin{example}
+        Let $x \in X$, then $\d_x$ is the \emph{Dirac mass of $x$} defined by
+        \[
+            \d_x(A) = \begin{cases} 
+                0 & \tif x \notin A \\
+                1 & \tif x \in A.
+            \end{cases} 
+        \]
+        Then $\d_x \in \Mm(X)$.
+    \end{example}
+
+    \begin{lemma}
+        If $\mu, \mu' \in \Mm(X)$ then
+        $\frac{1}{2}(\mu + \mu') \in \mu(X)$.
+        More generally, for $\lambda \in [0, 1]$, 
+        \[
+            \lambda\mu + (1 - \lambda)\mu' \in \Mm(X).
+        \]
+    \end{lemma}
+
+    \begin{corollary}
+        Any convex combination of means is a mean.
+        \[
+            \sum_{i = 1}^n \lambda_i \mu_i
+        \]
+        With $\lambda_i \leq 0$ and $\sum \lambda_i = 1$.
+    \end{corollary}
+
+    \begin{remark}
+        $\Mm(X)$ is a subset of the vector space $\R^{\Pp(X)}$
+        of all functions $\Pp(X) \to \R$.
+        We endow $\R^{\Pp(X)}$ with the product topology, 
+        which is the topology of pointwise convergence.
+        Thus a sequence $(\mu_n)$ of means converges to $\mu$
+        iff $\forall A \subseteq X, \mu_n(A) \to \mu(A)$.
+    \end{remark}
+
+    \begin{proposition}
+        $\Mm(X)$ is compact.
+    \end{proposition}
+
+    \begin{proof}
+        $\Mm(X) \subset [0, 1]^{\Pp(X)}$ which by Tychonov is compact.
+        Thus we only need to show that $\Mm(X)$ is closed.
+        We an write $\Mm(X)$ as:
+        \begin{align*}
+            \Mm(X) =&
+            \setst{
+                \mu \in [0, 1]^{\Pp(X)}
+            }{
+                \mu(X) = 1
+            }
+            ~\cap \\&
+            \bigcap_{A, B \text{ disjoint}}
+            \setst{
+                \mu \in [0, 1]^{\Pp(X)}
+            }{
+                \mu(A \cup B) = \mu(A) + \mu(B)
+            }
+        \end{align*}
+        Since all those sets are defined by closed conditions, 
+        they are closed and thus $\Mm(X)$ is closed.
+    \end{proof}
+
+
+
+    \newpage
+    .
+\end{document}

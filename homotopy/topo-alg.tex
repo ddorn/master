@@ -1,0 +1,182 @@
+\input{../preambule.tex}
+
+
+\title{Homotopy }
+\author{Diego Dorn \\ Lectures notes from Christian Urech}
+\date{Spring 2021}
+
+\newcommand{\homeo}{\approx}
+\newcommand{\mapspace}{\operatorname{map}}
+\newcommand{\Top}{\mathrm{Top}}
+
+\begin{document}
+    \maketitle
+
+    % \tableofcontents
+    % \newpage
+
+    \section{The compact-open topolgy}
+
+    The \emph{aim} is to upgrade the set of (continuous) maps $f:X \to Y$
+    to a space of maps, and thus the category of spaces is enriched over $\Top$ to $\Top_*$
+
+    \begin{definition}
+        The set of all maps $f: X \to Y$ is given the structure of a space map $(X, Y)$
+        with the \emph{compact open topology}.
+        whose subbasis is 
+        \[
+            B(K, U) = \bigsetst{f: X \to Y }{
+                f(K) \subset U
+            }
+        \]
+        for $K$ compact in $X$ and $U$ open in $Y$.
+    \end{definition}
+
+    Therefore a basis for this topology is given by finite intersections of $B(K_i, U_I)$, 
+    $1 \leq i \leq n$, that is, 
+    \[
+        B(K_\bullet, U_\bullet) = \setst{f: X \to Y }{
+            f(K_i) \subset U_i~
+            \forall\, 1 \leq i \leq n
+        }
+    \]
+    and an arbitrary open subset is a union of such $B(K_\bullet, U_\bullet)$.
+
+    \begin{remark}
+        We will often work with finite CW-complexes as source of map $(X, Y)$.
+        If $Y$ is a CW-complex then $\mapspace(X, Y)$ has the homotopy type
+        of a CW-complex, but this is not true if $X$ is an infinite CW-complex in general.
+    \end{remark}
+
+    \begin{examples}
+        \begin{itemize}
+            \item $X = \star$ then $\mapspace(\star, Y) \homeo Y$
+            \item $X = \set{1, \dots, n}$ is discrete, then $\mapspace(X, Y) \homeo Y^n$.
+            \item $X = I = [0, 1]$, then $\mapspace(I, Y)$ is the space of maps paths in $Y$.
+                One can choose a nicer basis: with $t_1 = 0 < t_2 < \dots < t_n = 1$,
+                a basis is $B\parenthesis{[t_i, t_{i+1}], U}$ for all $U$.
+            \item $X = S^1$, then $\mapspace(X, Y) = \Lambda Y$ is the space of all free (base point is arbitrary) loops.
+        \end{itemize}
+    \end{examples}
+
+    \begin{remark}
+        Exponential law. We write $Y^X$ for $\mathrm{Mor}_{set}(X, Y)$.
+        There is a natural bijection in $Set$
+        \[
+            Z^{X \times Y} \equiv {(Z^Y)}^X
+        \]
+        given by
+        \[
+            b(\p) = f: X\times Y \to Z
+            <-> 
+            \func{a(f) = \p}{X}{Z^Y}
+                {x}{f(x, -)}
+        \]
+        In fact $X \times -$ is left adjoint to $Z^-$.
+        Inside $Y^X SUPSET \mapspace(X, Y)$ we ask if the adjonction 
+        is compactible with the compact-open topology.
+        When do we have $\mapspace(X \times Y, Z) \homeo \mapspace(X, \mapspace(Y, Z))$ ?
+        This isn't always the cas, so we will impose restrictions.
+    \end{remark}
+
+    \begin{proposition}~
+        \begin{itemize}
+            \item Let $X$ be locally compact, then the evaluation $ev$ is continuous:
+            \[
+                \func{ev}{\mapspace(X, Y) \times X}{Y} {(f, x)}{f(x)}
+            \]
+            \item If $Y$ is locally compact, a map $F: X \times Y \to Z$ is continuous
+                iff $a(f): X \to \mapspace(Y, Z)$ is continuous.
+        \end{itemize}
+    \end{proposition}
+
+    \begin{proof} We prove both parts:
+        \begin{itemize}
+            \item 
+                Let $U \ni f(x)$ be open in $Y$. Since $f$ is continuous,
+                $f^{-1}(U)$ is an open neighbourhood of $x$. Since $X$ is locally compact,
+                there is $x \in K \subset f^{-1}(U)$, with $K$ compact.
+                We choose $B(K, U)$ in $\mapspace(X, Y)$ and $K$ as neighbourhood of $x \in X$.
+                \[
+                    ev(B(K, U) \times K) \subset U
+                \]
+                so $ev$ is indeed continuous.
+            \item Notice first the if $f: X \times Y \to Z$ is a map,
+                then \todo{fill}
+                Next we show that $a(f)$ is continuous by looking at the preimage of 
+                $G(L, W)$. For $L \subset Y$ compact, $W$ open in $Z$, 
+                \[
+                    a(f)^{-1}(B(L, W)) = \setst{x \in X}{f(x \times L) \subset W}.
+                \]
+                Since $W$ is open, $f^{-1}(W)$ is open in $X \times Y$ and contains 
+                $x \times L$.
+                Let us choose an open subset $U \times V$ for the product topology
+                in $X \times Y$. Since $L$ is compact, we ccan assume that is $x \times L$.
+                We have shown that every point $x \in a(f)^{-1}(B(L, W))$
+                admits an open neighbourhood in this preimage.
+            
+                Last part: Assume $\p: X \to \mapspace(Y, Z)$ is continuous. 
+                We prove that $b(\p)$ is continuous.
+                \[
+                    b(\p): 
+                        X \times Y
+                        \xto{\p \times 1}
+                        \mapspace(Y, Z) \times Y
+                        \xto{ev} Z
+                \]
+                \[
+                    (X, y) \mapsto (\p(x), y) 
+                    \mapsto \p(x)(y)
+                \]
+                So $b(\p)$ is continuous because $\p \times 1$ is so
+                amd $ev$ is also continuous by the first point.
+        \end{itemize}
+    \end{proof}
+
+    \begin{lemma}
+        Let $X, Y$ be Hausdorff spaces. Then a subbasis for $\mapspace(X \times Y, Z)$
+        is given by $B(K \times L, W)$
+        where $K$ is compact in $X$, $L$ is compact in $Y$ and $W$ is open in $Z$.
+    \end{lemma}
+
+    \begin{proof}
+        Let $A$ be compact in the product, $A_X = \pi_X(A)$,
+        $A_Y = \pi_Y(A)$ are compact (projections of a compact).
+        We have $A \subset A_X \times A_Y$.
+        For $f \in B(A, W)$, in principle $f \notin B(A_X, A_Y, W)$
+        For any $(x, y) \in A$, $(x, y) \in A_X \times A_Y \cap f^{-1}(W)$.
+        Choose $(x, y) \in U_x \times U_y$ with
+        $x \in U_x \in A_X$ open
+        and
+        $y \in U_y \in A_Y$ open.
+
+        Now, compact Hausdorff implies normal, hence regular so 
+        we can separate $x$ form $A_X \setminus U_x$ by $x \in U \subset \bar{U} \subset U_x$.
+        the same goes for $y$ form $A_Y \setminus U_y$ by $y \in V \subset \bar{V} \subset U_y$.
+
+        Finally, the compact subspaces $\bar{U} \times \bar{V}$ cover $A$, so we can extract
+        a finite cover $
+            \bar{U}_i \times \bar{V}_i
+        $, $1 \leq i \leq n$.
+        Then $f \in \bar{U}_i \times \bar{V}_i, W)$
+        since $ \bar{U}_i \times \bar{V}_i \subset A$, so
+        $f \in \bigcap_{i = 1}^n \bar{U}_i \times \bar{V}_i$
+    \end{proof}
+
+    Notice that $\a$ sends $B(K \times L, W)$ to $B(K, B(L, W))$.
+
+    \begin{lemma}
+        If $Z$ is Hausdorff, then $\mapspace(Y, Z)$ is Hausdorff.
+    \end{lemma}
+
+    \begin{lemma}
+        If $Z$ is Hausdorff, $\mathcal{B}$ is a subbasis of its topolgy,
+        then $B(K, \mathcal{B})$ for $K \subset Y$ compact form a 
+        subbasis for the compact-open topology on $\mapspace(Y, Z)$.
+    \end{lemma}
+
+
+
+    \newpage
+    .
+\end{document}
