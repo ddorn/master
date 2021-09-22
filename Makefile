@@ -4,7 +4,7 @@ LATEX = latexmk
 
 all: homotopy analysis-group
 
-analysis-groups: analysis-group/analysis-group.pdf
+analysis-group: analysis-group/analysis-group.pdf
 homotopy: homotopy/homotopy.pdf
 
 %.pdf: %.tex preambule.tex
