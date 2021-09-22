@@ -1,0 +1,14 @@
+---
+variables:
+  LATEX_IMAGE: laurenss/texlive-full
+
+pdf:
+  stage: build
+  image: $LATEX_IMAGE
+  script:
+    - make
+
+  artifacts:
+    paths:
+      - "**/*.pdf"
+
