@@ -7,8 +7,10 @@
 
 \newcommand{\Isom}{\mathrm{Isom}}
 \newcommand{\Acts}{\curvearrowright}
-\renewcommand{\P}[1]{\mathbb{P}\left(#1\right)}
+\renewcommand{\P}[1]{\mathbb{P}\hspace{-0.3ex}\left(#1\right)}
+\newcommand{\Pcond}[2]{\mathbb{P}\hspace{-0.3ex}\left(#1 \middle| #2 \right)}
 \newcommand{\E}[1]{\mathbb{E}\left[#1\right]}
+\newcommand{\Fourrier}{\mathcal F}
 
 \begin{document}
     \maketitle
@@ -19,8 +21,8 @@
     \begin{theorem}
         Let $S_n$ be a simple random walk on $\Z^d$.
         \begin{itemize}
-            \item If $d = 1, 2$ then $\P{\exists n S_n = 0} = 1$.
-            \item If $d \geq 3$, $\P{\exists n S_n = 0} < 1$.
+            \item If $d = 1, 2$ then $\P{\exists n, S_n = 0} = 1$.
+            \item If $d \geq 3$, $\P{\exists n, S_n = 0} < 1$.
         \end{itemize}
     \end{theorem}
 
@@ -84,6 +86,140 @@
                 c < \infty & \tif \pi_d < 1
             \end{cases}
         \end{align*}
+    \end{proof}
+
+    \begin{claim}
+        Let $P_n(x) = \P{S_n = x}$.
+        We have
+        \[
+            P_{n+1} = P_n * P_1 = P_1^{*(n+1)}
+        \]
+        where $(f * g)(x) = \sum_{z \in \Z^d} f(z)g(x - z)$.
+    \end{claim}
+
+    \begin{proof}
+        Let $Q_n(x, y) = \P{S_n = x | S_0 = y}$, so that $P_n(x) = Q_n(0, x)$.
+        The semi random walk satifies the invariance by translation:
+        \[
+            \P{S_1 = x \pm 1 | S_0 = x}
+            = 
+            \P{S_1 = \pm 1 | S_0 = 0}
+        \]
+        And more generally, for all $z \in \Z^d$, we have
+        \[
+            \Pcond{S_n = y}{S_0 = x}
+            = 
+            \Pcond{S_n = y + z}{S_0 = x + z}.
+        \]
+        So, $P_n(x) := Q_n(0, x)$ and $Q_n(x, y) = P(y - x)$.
+        \begin{align*}
+            Q_{n + 1}(x, y) 
+            &= 
+            \Pcond{S_{n+1} = y}{S_0 = y}
+            \\&=
+            P_x(S_{n+1} = y)
+            \\ &= 
+            \sum_z P_x(S_{n+1} = y \andd S_1 = z)
+            \\&=
+            \sum_z \underbrace{
+                P_x(S_{n+1} = y | S_1 = z) 
+            }_{Q_n(z, y)}
+            \underbrace{
+                \Pcond{S_1 = z}{S_0 = x}
+            }_{Q_1(x, y)}
+        \end{align*}
+
+        So \[
+            Q_{n+1}(x, y) = \sum_{z \in \Z^d}
+                Q_1(x, z) Q_n(z, y)
+        \]  % Seems obvious... ?
+        Which is a matrix multiplication, 
+        so $Q_{n+1} = Q_1 \cdot Q_n = Q_1^{n+1}$.
+
+        \[
+            P_{n+1}(x) = Q_{n+1}(0, x) = 
+            \sum_z Q_n(0, z) Q_1(z, x)
+            = \sum_z P_n(z) P_1(x - z).
+        \]
+        That is, 
+        \[
+            P_{n+1} = P_n * P_1 = P_1^{*(n+1)}
+        \]
+        where $(f * g)(x) = \sum_{z \in \Z^d} f(z)g(x - z)$.
+    \end{proof}
+
+    \begin{claim}
+        ...
+    \end{claim}
+
+    \begin{proof}
+        We compute $P_n(x)$ via a Fourrier transform.
+        If $f: \Z^d \to \R$ is a function of finite support,
+        its Fourrier transform is
+        \[
+            \func{\Fourrier f}{\R}{\C}
+            {\Fourrier f(x)} {
+                \sum_{k \in \Z^d} f(k) e^{ikx}
+            }
+        \]
+        which satisfies \begin{itemize}
+            \item $\Fourrier(f * g)(x) = \Fourrier(f)(x) \Fourrier(g)(x)$.
+            \item \[
+                f(k) = \frac{1}{2\pi} \int_{-\pi}^\pi \Fourrier f(x) e^{-ikx} \, dx
+            \]
+        \end{itemize}
+
+        Now, \[
+            P_1(x) = P_0(S_1 = x) = \begin{cases}
+                \frac{1}{2} & \tif x \in \set{-1, 1} \\
+                0 & \otherwise.
+            \end{cases}
+        \]
+        Thus,
+        \[
+            \Fourrier(P_1)(x) = \frac{1}{2}\parenthesis{e^{ix} + e^{-ix}} = \cos(x).
+        \]
+        And $ \Fourrier(P_n) = \bigparenthesis{\Fourrier(P_1)}^n = (\cos x)^n$.
+
+        Finally, 
+        \[
+            \Fourrier\parenthesis{\sum P_n} = \sum_n \Fourrier(P_n) = 
+            \sum_n (\cos x)^n = \frac{1}{1 - \cos x}.
+        \]
+        Applying the inverse Fourrier transform,
+        \[
+            \sum_{n = 0}^\infty P_n(0) = \frac{1}{2\pi} \int_{-\pi}^{\pi}
+            \frac{1}{1 - \cos x} e^{i \cdot 0 \cdot x} dx = \infty
+        \]
+
+        In more dimensions, the Fourrier transform applies similarly,
+        \[
+            \func{\Fourrier f}{\R}{\C}
+            {\Fourrier f(x)} {
+                \sum_{k \in \Z^d} f(k) e^{ik \cdot x}
+            }
+        \]
+        where $k \cdot x$ is the scalar product and which satisfies \begin{itemize}
+            \item $\Fourrier(f * g)(x) = \Fourrier(f)(x) \Fourrier(g)(x)$.
+            \item \[
+                f(k) = \parenthesis{\frac{1}{2\pi}}^d
+                 \iiint_{[-\pi, \pi]^d} \Fourrier f(x) e^{-ik \cdot x} \, dx
+            \]
+        \end{itemize}
+
+        From which we obtain by the same process 
+        \begin{align*}
+            \sum_n P_n(0) &= 
+                \parenthesis{\frac{1}{2\pi}}^d
+                \int_{[-\pi, \pi]^d} 
+                \frac{1}{1 - \frac{1}{d} \sum_{i = 1}^d \cos(x_i)} dx
+            \\&= 
+                \int_{[-\pi, \pi]^d} 
+                \frac{1}{\norm{x}^2} dx.
+        \end{align*}
+
+        Which when $d = 1, 2$ diverges, and converges for the case $d = 3$, 
+        by a transformation to polar coordinates.
     \end{proof}
 
 
