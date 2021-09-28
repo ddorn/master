@@ -1,0 +1,92 @@
+\input{../preambule.tex}
+
+
+\title{Lattice Models}
+\author{Diego Dorn \\ Lectures notes from Frank Gabriel}
+\date{Automn 2021}
+
+\newcommand{\Isom}{\mathrm{Isom}}
+\newcommand{\Acts}{\curvearrowright}
+\renewcommand{\P}[1]{\mathbb{P}\left(#1\right)}
+\newcommand{\E}[1]{\mathbb{E}\left[#1\right]}
+
+\begin{document}
+    \maketitle
+
+    % \tableofcontents
+    \section{Simple random walks}
+
+    \begin{theorem}
+        Let $S_n$ be a simple random walk on $\Z^d$.
+        \begin{itemize}
+            \item If $d = 1, 2$ then $\P{\exists n S_n = 0} = 1$.
+            \item If $d \geq 3$, $\P{\exists n S_n = 0} < 1$.
+        \end{itemize}
+    \end{theorem}
+
+    The proof is in five parts.
+
+    \begin{claim}
+        If the theorem holds for $d = 1, 2, 3$ then it holds for general $d$.
+    \end{claim}
+    \begin{proof}
+        Let $d > 3$, $S_n$ a SRW in $\Z^d$.
+        We consider \[
+            \func{\pi}{\Z^d}{\Z^3}
+            {(x_1, \dots, x_n)}{(x_1, x_2, x_3)}
+        \]
+        We consider $\pi(S_n) = \tilde{S}_n \in \Z^3$:
+        \begin{itemize}
+            \item $\tilde{S}_0 = (0, 0, 0)$.
+            \item There are some times where $\tilde{S}_n = \tilde{S}_{n+1}$.
+                each time it is the $k$-th coordinate of $S_n$ that changes, with $k > 3$.
+            \item Each time $\tilde{S}_n \neq \tilde{S}_{n+1}$, 
+                the move was to take uniformly a neighbour of $\tilde{S}_n$.
+            \item If we look at on only when $\tilde{S}_n$ moves,
+                we obtain a simple random walk $\hat{S}_n$.
+        \end{itemize}
+        But $\P{\exists n, \hat S_n = (0, 0, 0)} < 1$ by hypothesis, 
+        and since $\mathrm{range}(\tilde S_n) = \mathrm{range}(\hat S_n)$,
+        we obtain
+        $\P{\exists n, \tilde S_n = (0, 0, 0)} < 1$.
+        and so must be the probability for $S_n$.
+    \end{proof}
+
+    \begin{claim}
+        Let $N_d$ be the number of vists to $0$ after time $n = 0$.
+        Then $\E{N_d} = \infty$ if and only if
+         $\pi_d := \P{\exists n > 0, S_n = 0} = 1$.
+    \end{claim}
+
+    \begin{proof}
+        \begin{align*}
+            \E{N_d} &=
+            \sum_{k=1}^n k \P{N_d = k}
+            \\&=
+            \sum_{k > 0} \sum_{j > 0} \mathbb{1}_{j \leq k}
+                \P{N_d = k}
+            \\&=
+            \sum_{j > 0} \sum_{k > 0} \mathbb{1}_{j \leq k}
+                \P{N_d = k}
+            \\&=
+            \sum_{j > 0} \sum_{k > j} \P{N_d = k}
+            \\&=
+            \sum_{j > 0} \P{N_d \geq j}
+        \end{align*}
+
+        We compute $\P{N_d \geq j} = \bigparenthesis{
+            \P{\exists n, S_n = 0}
+        }^j = \pi_d^j$.
+        So \begin{align*}
+            \E{N_d} = \sum_{j = 1}^\infty \pi_d^j = \frac{\pi_d}{1 - \pi_d}
+            = \begin{cases}
+                \infty & \tif \pi_d = 1 \\
+                c < \infty & \tif \pi_d < 1
+            \end{cases}
+        \end{align*}
+    \end{proof}
+
+
+    \newpage
+    .
+\end{document}

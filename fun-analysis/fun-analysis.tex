@@ -1,0 +1,125 @@
+\newcommand{\lang}{francais}
+\input{../preambule.tex}
+
+
+\title{Analyse fonctionnelle}
+\author{Diego Dorn \\ Notes du cours de Boris Buffoni}
+\date{Automn 2021}
+
+\newcommand{\linfR}{l^\infty_\R}
+
+\begin{document}
+    \maketitle
+
+    \section{Introduction}
+    \subsection{Limite de Banach}
+
+    On utilise les conventions suivantes:
+    \begin{itemize}
+        \item $\N = \set{1, 2, 3, \dots}$
+        \item $\F = \R$ ou $\C$.
+    \end{itemize}
+
+    \begin{definition}
+        Soi $\linfR$ \emph{l'espace des suites bornées de nombres réels}.
+        On a $ x = (x_n) \in \linfR$
+            si $x_n \in \R$ pour tout $n$ 
+        et $\sup x_n < \infty$.
+
+        C'est un espace vectoriel sur \R si on le munit des deux opération suivantes:
+        \begin{itemize}
+            \item $(x_n) + (y_n) := (x_n + y_n)_{n \leq 1}$.
+            \item $\a (x_n) = (a \cdot x_n)_{n \leq 1}$.
+        \end{itemize}
+        L'élément nul est la suite identiquement nulle.
+    \end{definition}
+
+    On not $c$ le sous espace vectoriel de $\linfR$ des suites cnovergentes.
+    L'application $\lim$, $x \mapsto \lim_{n\to\infty} x_n$ 
+    pour $x \in c$ est définie.
+    L'opérateur $\lim$ est linéaire.
+
+    \begin{definition}
+        Une \emph{limite de Banach} es une application
+        $F: \linfR \to \R$ telle que:
+        \begin{enumerate}
+            \item $F$ est linéaire.
+            \item Pour tout $x \in \linfR$,
+            \[
+                \liminf x \leq F(x) \leq \limsup x
+            \]
+            \item $F(Sx) = F(X)$ pour tout $x = (x_1, x_2, \dots) \in \linfR$
+                où $Sx = (x_2, x_3, \dots)$.
+        \end{enumerate}
+    \end{definition}
+
+    Banach (1892-1845) à montré qu'il existe un tel $F$.
+
+    \begin{definition}
+        Une \emph{fonctionnelle} (linéaire) est une application
+        linéaire $f: X \to \F$ d
+        un $\F$-espace vectoriel $X$ dans \F.
+    \end{definition}
+    
+    Par exemple, $\lim$ est une fonctionnelle sur $c$
+    et $F$ sur $\linfR$.
+
+    \subsection{Un problème aux valeurs propres (PVP)}
+
+    Soit $p \in C^1([0, 1], \R)$  telle que $\min_{t \in [0, 1]} p(t) > 0$.
+    On considère le P.V.P. suivant:
+    \[
+        (PVP) ~~ \begin{cases} 
+            - (p(t)u'(t))' = \lambda u(t) & 0 \leq t \leq 1 \\
+            u(0) = 0 \\
+            u(1) = 0
+        \end{cases} 
+    \]
+    On dira que $u \in C^2([0, 1], \R)$ est une \emph{fonction propre}
+    pour (PVP) si \begin{itemize}
+        \item $u$ n'est pas partout nulle.
+        \item il existe $\lambda \in \R$ appelé \emph{la valeur propre associée}
+            à $u$ et $\lambda$ satisfont (PVP)
+    \end{itemize}
+
+    Dans ce cours, nous verrons qu'il existe une suite $(u_n)$ de fonctions
+    propres, telles que \begin{itemize}
+        \item condition d'orthogonalité: \[
+            \int_0^1 u_n(t) u_m(t) dt = \begin{cases} 
+                0 & \tif n \neq m \\
+                1 & \otherwise.
+             \end{cases} 
+        \]
+        \item si $f \in C([0, 1])$ vérifie pour tout $n \in \N$
+             \[
+                 \int_0^1 f(t) u_n(t) dt = 0
+            \]
+            alors $f = 0$.
+        \item La suite $(\lambda_n)$ associée satisfait
+             \[
+                 \lim_{n \to \infty} \lambda_n = +\infty
+             \]
+    \end{itemize}
+
+    En fait, c'est la théorie abstraite qu'on va développer dans ce cours:
+    elle généralise en dimension infinie la théorie des matrices réelles et 
+    symétriques (elles sont diagonalisables).
+
+    \section{Rappels et notions de base}
+
+    \subsection{Rappels sur les espaces vectoriels normés}
+
+    \begin{definition}
+        Un \emph{espace vectoriel normé} ou EVN, $(X, \norm{.})$ 
+        est constitué d'un espace vectoriel $X$ sur \F et d'une norme 
+        $\norm{.}: X \to \R$ qui vérifie les conditions suiviantes
+        \begin{itemize}
+            \item $\norm{x} \geq 0$ avec égalité ssi $x = 0$.
+            \item $\norm{\lambda x} = \abs{\lambda} \norm{x}$.
+            \item $\norm{x + y} \leq \norm{x} + \norm{y}$.
+        \end{itemize}
+    \end{definition}
+
+    \newpage
+    .
+\end{document}

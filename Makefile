@@ -2,9 +2,10 @@ LATEX = latexmk
 
 .PHONY: all homotopy analysis-group clean distclean
 
-all: homotopy analysis-group
+all: homotopy analysis-group fun-analysis
 
 analysis-group: analysis-group/analysis-group.pdf
+fun-analysis: fun-analysis/fun-analysis.pdf
 homotopy: homotopy/homotopy.pdf
 
 %.pdf: %.tex preambule.tex
