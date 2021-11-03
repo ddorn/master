@@ -85,102 +85,94 @@
     in $\O{|G|^3}$.
 
     To show that \textsc{SepMatch} is $\NP$-hard,
-    we reduce \textsc{3Sat} to it.
-    Let $n \in \N$ and $\phi = \bigwedge_{i} \bigvee_j l_{ij}$
-    with $l_{ij} \in \set{x_1, \neg x_1, \dots, x_n, \neg x_n}$
-    be a \textsc{Sat} input.
+    we reduce \textsc{IndSet} to it.
 
-    For $i = 1, \dots, n$, we define 
-    $G^{var}_i$ as the graph
-    \begin{center}
-        \begin{tikzpicture}[node distance=2cm]
-            \node (r) {$r_i$};
-            \node[above left of=r] {$x_i$}
-                edge (r);
-            \node[above right of=r] {$\neg x_i$}
-                edge (r);
-        \end{tikzpicture}
-    \end{center}
+    Let $G = (V, E)$ be any finite graph. We define the graph $G' = (V', E')$
+    as \begin{itemize}
+        \item $V' = V \times \set{0, 1}$
+        \item $E' = \setst{
+            \bigparenthesis{(u, i), (v, j)} \in V' \times V'
+        }{
+            (u, v) \in V \vee (u = v \wedge j = 1 - i)
+        }$, that is, two vertices are connected in $G'$
+        if their first coordinate are connected in $G$
+        or if they their first coordinate is the same and the second coordinate
+        are different.
+    \end{itemize}
 
-    Now for each clause $C_i = l_{i1} \vee l_{i2} \vee l_{i3}$
-    we define $G^{clause}_i$ as
-    \begin{center}
-        \begin{forest}
-            [$C_i$ [$l_{i1}$] [$l_{i2}$] [$l_{i3}$]]
-        \end{forest}
-    \end{center}
+    Our reduction from \textsc{IndSet} to \textsc{SepMatch}
+    if the function that maps and input of \textsc{IndSet}
+    $\angles{G, k}$ to the input of \textsc{SepMatch} $\angles{G', k}$.
 
-    For each literal $l_{ij}$, if $l_{ij} = x_k$ for some $k$, 
-    we add an edge from $l_{ij}$ to $\neg x_k$,
-    otherwise we add an edge from $l_{ij}$ to $x_k$.
+    Before proving that this is indeed a reduction, we notice that this map 
+    is computable in polynomial time and we setup some notations and a lemma.
+    Let $d_G$ and $d_{G'}$ the distances between vertices of $G$ and $G'$
+    respectively. For a node $u \in G'$, we write $u = (u_0, u_1)$,
+    and $\pi_0$ the projection on the first coordinate, so $\pi_0(u) = u_0$.
 
-    For instance, let $\phi = (x_1 \vee x_2 \vee x_3) 
-        \wedge (x_1 \vee \neg x_2 \vee \neg x_3)
-        \wedge (\neg x_1 \vee \neg x_2 \vee \neg x_3)
-    $.
+    \begin{lemma*}
+        For all $u, v \in V'$ with $u_0 \neq v_0$, \[
+            d_{G'}(u, v) = d_G(u_0, v_0).
+        \]
+    \end{lemma*}
+    \begin{proof}
+        Let $u, v \in V'$. We first show that $d_{G'}(u, v) \geq d_G(u_0, v_0)$.
+        Indeed, let $\w = \w_0\w_1\dots\w_n$ be a path from $u$ to $v$ in $G'$. 
+        We have that $\w_G = \pi_0(\w_0) \pi_0(\w_1) \dots \pi_0(\w_n)$
+        is a path in $G$ if we remove vertices that may appear more than once consecutively.
+        Thus $\abs{\w_G} \leq \abs{\w}$ and the distances in $G$ are always 
+        less than the distances in $G'$.
 
-    The corresponding graph is 
-    \begin{center}
-        \begin{tikzpicture}
-            \node (c1) {$C_1$}
-                    +(-1, -1) node (l11) {$l_{11}$}
-                    +(0, -1) node (l12) {$l_{12}$}
-                    +(1, -1) node (l13) {$l_{13}$}
-                ++(3, 0) node (c2) {$C_2$}
-                    +(-1, -1) node (l21) {$l_{21}$}
-                    +(0, -1) node (l22) {$l_{22}$}
-                    +(1, -1) node (l23) {$l_{23}$}
-                ++(3, 0) node (c3) {$C_3$}
-                    +(-1, -1) node (l31) {$l_{31}$}
-                    +(0, -1) node (l32) {$l_{32}$}
-                    +(1, -1) node (l33) {$l_{33}$};
+        It remains to be shown that $d_{G'}(u, v) \leq d_G(u_0, v_0)$.
+        Let $\w = w_0\w_1\dots\w_n$  be a path from $u_0$ to $v_0$ in $G$. We
+        construct a path $\w_{G'}$ from $u$ to $v$ of the same length 
+        in $G'$. For $i = 0, \dots, n$,
+        \[ 
+            (\w_{G'})_i = \begin{cases}
+                (\w_0, u_1) & \tif i = 0 \\
+                (\w_i, v_1) & \tif i > 0
+            \end{cases}
+        \]
+        This is clearly a path in $G'$ from $(\w_0, u_1) = u$ to $(\w_n, v_1) = v$
+        since at any step $\w_i$ is a neighbour of $\w_{i+1}$.
+        Thus distances in $G'$ are at most distances in $G$.
+    \end{proof}
 
-            \path (c1) ++ (0, -5) node (r1) {$r_1$}
-                    +(-1, 1) node (x1) {$x_1$}
-                    +(+1, 1) node (x1b) {$\neg x_1$}
-                ++(3, 0) node (r2) {$r_2$}
-                    +(-1, 1) node (x2) {$x_2$}
-                    +(+1, 1) node (x2b) {$\neg x_2$}
-                ++(3, 0) node (r3) {$r_3$}
-                    +(-1, 1) node (x3) {$x_3$}
-                    +(+1, 1) node (x3b) {$\neg x_3$};
+    We now show that $\angles{G, k} \in \textsc{IndSet}$ if and only if 
+    $\angles{G', k} \in \textsc{SepMatch}$.
+    
+    \paragraph{$\implies$}
+    Let $S \subset V$ be an independent set of size $k$,
+    then $M = \setst{
+        \bigparenthesis{
+            (s, 0), (s, 1)
+        }}{
+            s \in S
+        }
+    $ is a separated matching (of size $k$) in $G'$.
+    Indeed, let $e, e' \in M$ be two different edges.
+    We know that for all $u \in e$ and $v \in e'$, 
+    \begin{itemize}
+        \item $u_0 \neq v_0$ since the edges are different.
+        \item $d_G(u_0, v_0) \geq 2$ since $S$ is an independent set.
+    \end{itemize}
+    So by the lemma, $d_{G'}(u, v) = d_G(u_0, v_0) \geq 2$
+    and $M$ is indeed a separated matching.
 
-            \draw (c1) 
-                    edge (l11)
-                    edge (l12)
-                    edge (l13)
-                (c2)
-                    edge (l21)
-                    edge (l22)
-                    edge (l23)
-                (c3)
-                    edge (l31)
-                    edge (l32)
-                    edge (l33)
-                (r1)
-                    edge (x1)
-                    edge (x1b)
-                (r2)
-                    edge (x2)
-                    edge (x2b)
-                (r3)
-                    edge (x3)
-                    edge (x3b);
-
-            \draw (l11) -- (x1b)
-                (l12) -- (x2b)
-                (l13) -- (x3b)
-                (l21) -- (x1b)
-                (l22) -- (x2)
-                (l23) -- (x3)
-                (l31) -- (x1)
-                (l32) -- (x2)
-                (l33) -- (x3);
-
-
-        \end{tikzpicture}
-    \end{center}
-
+    \paragraph{$\impliedby$}
+    If $\angles{G', k} \in \textsc{SepMatch}$, 
+    let $M$ be a separated matching of size $k$. 
+    We show that 
+    \[
+        S = \setst{u_0}{(u, v) \in M}
+    \]  
+    is an independent set (of size $k$) in $G$.
+    To that extent, let $u_0, u_0' \in S$
+    and $(u, v), (u', v') \in M$ the corresponding edges.
+    Since $M$ is a separated matching, 
+    we have that $d_{G'}(u, u') \geq 2$
+    so that, by the lemma, $d_G(u_0, u_0') = d_{G'}(u, u') \geq 2$,
+    so $u_0$ and $u_0'$ are indeed separated.
 
 
     \section*{Exercice 3}
