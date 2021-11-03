@@ -1,0 +1,318 @@
+\input{../preambule.tex}
+
+
+\title{Homework 1}
+\author{Diego Dorn}
+% \date{Automn 2021}
+
+\begin{document}
+    \maketitle
+
+    % \tableofcontents
+
+    \section*{Exercise 1}
+
+    For a decisive Turing machine $\Mm$, we write $L(\Mm)$ for the language it decides.
+    We first show that if $L(\Mm) \in \NP$, then $L(\Mm) \in \coNP$.
+
+    \begin{claim}
+        If 
+        $L(\Mm) \in \NP$ 
+        for all decisive Turing machine $\Mm$, 
+        then for all decisive Turing machine $\Nn$,
+        $L(\Nn) \in \coNP$.
+    \end{claim}
+
+    \begin{proof}
+        Let $\Mm$ be a decisive Turing machine,
+        we build a decisive Turing machine $\compl{\Mm}$
+        that runs exactly the same way as $\Mm$, but on each branch,
+        when it halts it outputs \textit{yes} when $\Mm$ outputs \textit{no}
+        and \textit{no} when $\Mm$ outputs \textit{yes}. The \textit{maybe} 
+        do not change. This way $\compl{\Mm}$ accepts a word $x$ if and only
+        if $\Mm$ does not accept $x$. 
+        Thus $L(\compl{\Mm}) = \compl{L(\Mm)}$.
+        Using the hypothesis with $\compl{\Mm}$, 
+        we get that $L(\compl{\Mm}) = \compl{L(\Mm)} \in \NP$
+        and therefore $L(\Mm) \in \coNP$.
+    \end{proof}
+
+    We now prove that for a polytime decisive Turing machine $\Mm$, 
+    $L(\Mm) \in \NP$.
+    To that extent, we construct a polytime verifier $V(x, C)$ for $L$
+    as follows:
+    \begin{itemize}
+        \item If $C$ doesn't encode a sequence of transitions of $\Mm$, reject $x$. 
+            Otherwise, let $(C_n)$ be the finite sequence of transitions encoded by $C$.
+        \item Simulate $\Mm$ on input $x$ and on the $n$-th step, use $C_n$ to decide 
+            of the next state of the deterministic simulation. 
+            If the transition $C_n$ is not in the transition function of $\Mm$, reject $x$.
+        \item When the simulation of $\Mm$ halts, if it outputs $yes$, 
+            accept $x$. Otherwise, reject $x$.
+    \end{itemize}
+
+    Since we can simulate Turing machines with only a polynomial slowdown,
+    and $\Mm$ is a polytime NTM, 
+    it is clear that $V$ run in polynomial time.
+    Thus, we only need to prove that $\Mm$ accepts $x$ if and only if there exist $C$
+    such that $V(x, C)$ accepts $x$. 
+
+    First, we notice that on any given input $x$, there cannot be one branch 
+    of the computation that outputs \textit{yes} and an other one that outputs \textit{no}.
+    
+    For the first direction, there is a branch of the computation of 
+    $\Mm$ on input $x$ that halts on a \textit{yes} or $\textit{no}$,
+    so it suffices to take $C$ as the sequence of transitions
+    that make up that branch.
+
+    For the reverse direction, if there is a $C$ that make $V$ output \textit{yes},
+    it must be a valid sequence of transitions for $\Mm$, 
+    and when $\Mm$ follows this branch, it outputs \textit{yes}.
+    Since there is a branch of $\Mm$ that outputs \textit{yes},
+    all the other branches must outputs \textit{yes} or \textit{maybe}
+    and thus $\Mm$ accepts $x$.
+
+
+    \section*{Exercice 2}
+
+    First we show that \textsc{SepMatch} is in $\NP$.
+    We can define a verifier $V(G, k, C)$ 
+    for \textsc{SepMatch} with the certificate $C$ being
+    an encoding of the edges of the matching.
+    $V$ checks for all pair of edges if the distance
+    between each pair of points is less than 2 in $G$, 
+    and that there are exactly $k$ edges. This can be done
+    in $\O{|G|^3}$.
+
+    To show that \textsc{SepMatch} is $\NP$-hard,
+    we reduce \textsc{3Sat} to it.
+    Let $n \in \N$ and $\phi = \bigwedge_{i} \bigvee_j l_{ij}$
+    with $l_{ij} \in \set{x_1, \neg x_1, \dots, x_n, \neg x_n}$
+    be a \textsc{Sat} input.
+
+    For $i = 1, \dots, n$, we define 
+    $G^{var}_i$ as the graph
+    \begin{center}
+        \begin{tikzpicture}[node distance=2cm]
+            \node (r) {$r_i$};
+            \node[above left of=r] {$x_i$}
+                edge (r);
+            \node[above right of=r] {$\neg x_i$}
+                edge (r);
+        \end{tikzpicture}
+    \end{center}
+
+    Now for each clause $C_i = l_{i1} \vee l_{i2} \vee l_{i3}$
+    we define $G^{clause}_i$ as
+    \begin{center}
+        \begin{forest}
+            [$C_i$ [$l_{i1}$] [$l_{i2}$] [$l_{i3}$]]
+        \end{forest}
+    \end{center}
+
+    For each literal $l_{ij}$, if $l_{ij} = x_k$ for some $k$, 
+    we add an edge from $l_{ij}$ to $\neg x_k$,
+    otherwise we add an edge from $l_{ij}$ to $x_k$.
+
+    For instance, let $\phi = (x_1 \vee x_2 \vee x_3) 
+        \wedge (x_1 \vee \neg x_2 \vee \neg x_3)
+        \wedge (\neg x_1 \vee \neg x_2 \vee \neg x_3)
+    $.
+
+    The corresponding graph is 
+    \begin{center}
+        \begin{tikzpicture}
+            \node (c1) {$C_1$}
+                    +(-1, -1) node (l11) {$l_{11}$}
+                    +(0, -1) node (l12) {$l_{12}$}
+                    +(1, -1) node (l13) {$l_{13}$}
+                ++(3, 0) node (c2) {$C_2$}
+                    +(-1, -1) node (l21) {$l_{21}$}
+                    +(0, -1) node (l22) {$l_{22}$}
+                    +(1, -1) node (l23) {$l_{23}$}
+                ++(3, 0) node (c3) {$C_3$}
+                    +(-1, -1) node (l31) {$l_{31}$}
+                    +(0, -1) node (l32) {$l_{32}$}
+                    +(1, -1) node (l33) {$l_{33}$};
+
+            \path (c1) ++ (0, -5) node (r1) {$r_1$}
+                    +(-1, 1) node (x1) {$x_1$}
+                    +(+1, 1) node (x1b) {$\neg x_1$}
+                ++(3, 0) node (r2) {$r_2$}
+                    +(-1, 1) node (x2) {$x_2$}
+                    +(+1, 1) node (x2b) {$\neg x_2$}
+                ++(3, 0) node (r3) {$r_3$}
+                    +(-1, 1) node (x3) {$x_3$}
+                    +(+1, 1) node (x3b) {$\neg x_3$};
+
+            \draw (c1) 
+                    edge (l11)
+                    edge (l12)
+                    edge (l13)
+                (c2)
+                    edge (l21)
+                    edge (l22)
+                    edge (l23)
+                (c3)
+                    edge (l31)
+                    edge (l32)
+                    edge (l33)
+                (r1)
+                    edge (x1)
+                    edge (x1b)
+                (r2)
+                    edge (x2)
+                    edge (x2b)
+                (r3)
+                    edge (x3)
+                    edge (x3b);
+
+            \draw (l11) -- (x1b)
+                (l12) -- (x2b)
+                (l13) -- (x3b)
+                (l21) -- (x1b)
+                (l22) -- (x2)
+                (l23) -- (x3)
+                (l31) -- (x1)
+                (l32) -- (x2)
+                (l33) -- (x3);
+
+
+        \end{tikzpicture}
+    \end{center}
+
+
+
+    \section*{Exercice 3}
+
+    \paragraph{1.}
+    Let \Uu be a universal Turing machine that can
+    simulate an other Turing machine with a polynomial slowdown.
+    We set $A$ as the same oracle as in class, that is, 
+    \[
+        A = \setst{ \angles{M, 1^k} }{
+            \Uu\parenthesis{
+                \angles{M, \angles{M, 1^k}}
+            } = 0
+            \text{ in } 2^k \text{ steps}
+        }.
+    \]
+    We have seen in class that $\Ptime^A = \NP^A$, so we just show that
+    $\coNP^A = \NP^A$. Indeed, 
+    \begin{align*}
+        L \in \coNP^A 
+        &\iff 
+        \compl{L} \in \NP^A
+        \\& \iff 
+        \compl{L} \in \Ptime^A
+        \\& \iff 
+        L \in \coP^A = \NP^A.
+    \end{align*}
+    Were the last line follows from the fact that if a language can be 
+    decided deterministically in polynomial time, then its complement
+    can be too, by just inverting the outputs of the Turing machine.
+
+    \paragraph{2.}
+    Let $ \Bb = \left\{ B : \forall n \abs{B \cap \set{0, 1}^n} = 1 \right\} $,
+    and for $B \in \Bb$, let $
+        L_B = \setst{1^n}{ \exists x \in \set{0, 1}^{n-1}, 0x \in B}
+    $.
+
+    \begin{claim}
+        For all $B \in \Bb$, $L_B \in \NP$.
+    \end{claim}
+    \begin{proof}
+        If $1^n \in L_B$, a certificate is the $x \in \set{0, 1}^{n-1}$
+        such that $0x \in B$. Indeed, a verifier can check if $0x \in B$ in a 
+        single query to the oracle.
+    \end{proof}
+
+
+    \begin{claim}
+        For all $B \in \Bb$, $L_B \in \coNP$.
+    \end{claim}
+    \begin{proof}
+        We have that \begin{align*}
+            \compl{L_B} &=
+            \setst{1^n}{ 
+                \forall x \in \set{0, 1}^{n-1}, 0x \notin B
+            }
+            \\&=
+            \setst{1^n}{ 
+                \exists x \in \set{0, 1}^{n-1}, 1x \in B
+            }
+        \end{align*}
+        where the last equality follows from the the fact that
+        $\abs{B \cap \set{0, 1}^n} = 1$.
+        With $\compl{L_B}$ written as such, we can apply the same proof as the previous
+        claim, mutatis mutandis.
+    \end{proof}
+
+    \begin{claim}
+        There exist $B \in \Bb$ such that $L_B \notin \Ptime^B$.
+    \end{claim}
+    \begin{proof}
+        Fix an enumeration $(M_n)_{n \in \N}$ of all oracle compatible Turing machines,
+        and let $b: \N \to \N \times \N$ be any bijection.
+        We define the sequence $\Mm_n = M_{b(n)_0}$ that contains each Turing machine
+        infinitely many times.
+
+        We now construct $B$ so that it fools each machine $M_n$ that runs in
+        polynomial time.
+        Fix $n \in N$, we now construct the $x \in \set{0, 1}^n$
+        that belongs to $B$.
+        We run $\Mm_n$ on $1^n$, and let $Q_k$ be the set of queries 
+        that $\Mm_n$ has asked up to the $k$-th
+        step of execution (not included).
+        For $i \in \set{0,1}$, we define $Q_k^i = \setst{q \in Q_k^i}{\abs{q} = n \andd q_0 = i}$
+        the set of queries of length $n$ that start with a $i$.
+        At step $k$, if the machine queries ``$q \in B$?'':
+        \begin{itemize}
+            \item if $q \notin \set{0, 1}^n$, we can \textit{yes} if and only 
+                if $q = 0^{\abs{q}}$, which would not change the output of 
+                a $\Mm_n$ on input $x$ that recognises any fixed $B$.
+            \item if $q \in Q_k$, the query has been already made, so 
+                we answer the same as the previous time the machine made this query.
+            \item if $q \notin Q_k$ and for some $i \in \set{0, 1}$, $\abs{Q_k^i} = 2^n$, 
+                that is, the set $i\concat \set{0, 1}^{n-1}$
+                was completely queried before, we must have $q \in (1-i)\concat \set{0, 1}^{n-1}$
+                so we say say that $q \notin B$.
+            \item otherwise, if $\abs{Q_k^{q_0}} = 2^n -1$, that is, 
+                $q$ is the last non-queried entry that start with $q_0$,
+                we say that $q \in B$
+            \item otherwise we say that $q \notin B$.
+        \end{itemize}
+
+        When the machine halts, if it hasn't queried all of both
+        $i \concat \set{0, 1}^{n}$, for $i = 0, 1$,
+        if the machine outputs: \begin{itemize}
+            \item \textit{yes},
+                let $x \in \setst{1y \in \set{0, 1}^n}{\forall k, 1y \notin Q_k^1}$.
+            \item \textit{no},
+                let $x \in \setst{0y \in \set{0, 1}^n}{\forall k, 0y \notin Q_k^0}$.
+        \end{itemize}
+        We set $B \cap \set{0, 1}^{n} = \set{x}$, which is a number that $\Mm_n$
+        did not query and that make its prediction fail.
+
+        Thus, with the $B$ as constructed, if a machine $\Mm_n$ doesn't query 
+        at least all the sequences in $\set{0, 1}^n$ that start with 0
+        or all the sequences that start with 1,
+        it fails.
+        Therefore we only need to show that every polytime machine $M_N$
+        don't query enough the oracle on large inputs.
+        Indeed, fix a polytime machine $M_N$
+        and define a subsequence
+        $(\Mm_{n_k})_{k \in \N} \subset (\Mm_n)_{n \in \N}$ 
+        such that for all $k \in \N$, $M_{n_k} = M_N$.
+        However, since $n^{\O1} << \O{2^n}$, there must be some $k \in \N$,
+        such that $\Mm_{n_k}$ doesn't make $2^{n_k} - 1$ queries and therefore fails.
+        Thus, $M_N$ fails on input $1^{n_k}$, and there is no polynomial time
+        machine that decides $L_B$.
+    \end{proof}
+
+    Therefore, $L_B \in \NP^B \cap \coNP^B \setminus \Ptime^B$.
+
+
+    \newpage
+    .
+\end{document}
