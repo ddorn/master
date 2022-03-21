@@ -8,6 +8,7 @@ analysis-group: analysis-group/analysis-group.pdf
 fun-analysis: fun-analysis/fun-analysis.pdf
 homotopy: homotopy/homotopy.pdf
 lattice-models: lattice-models/lattice-models.pdf
+projet: projet/projet.pdf
 
 %.pdf: %.tex preambule.tex
 	# @echo "*: $*"
