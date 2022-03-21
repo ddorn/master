@@ -9,7 +9,8 @@
 \usepackage[\lang]{babel}
 \usepackage{amssymb,amsmath,amsthm,epsfig,eepic,epic,verbatim,moreverb,fancybox}
 \usepackage{wasysym}
-\usepackage{bbold}
+% \usepackage{bbold}  % NO! DON"T USE IT. It add mathbb for integers bet makes it ugly for letters.
+\usepackage{dsfont}
 % \usepackage{tocstyle}  % To change the table of contents (TOC) style, and that's what we do next
 % \usetocstyle{nopagecolumn}  % One of classic, KOMAlike, nopagecolumn, allwithdot, noonewithdot, standard
 \usepackage{tikz}
@@ -33,6 +34,7 @@
 \usepackage{forest}  % For automatic tikz layout
 \usepackage[framemethod=tikz]{mdframed}  % Frame around theorems
 \usepackage{thmtools}  % Fixes the issue with \autoref and shared counters for thm env. Probably lots of other things also...
+\usepackage{listings}  
 
 \usepackage{xcolor}
 % creamy background
@@ -100,6 +102,7 @@ align=center, %
     \newtheorem{proposition}[theorem]{Proposition}
     \newtheorem*{proposition*}{Proposition}
     \newtheorem{lemma}[theorem]{Lemma}
+    \newtheorem*{lemma*}{Lemma}
     \newtheorem*{remark}{Remark}
     \newtheorem*{claim}{Claim}
     \newtheorem*{example}{Example}
@@ -161,6 +164,7 @@ align=center, %
 \newcommand{\restr}[1]{\mathbin\upharpoonright_{#1}}
 \newcommand{\compl}[1]{#1^\mathsf{c}}
 \newcommand{\abs}[1]{\left| #1 \right|}
+\newcommand{\bigabs}[1]{\big\lvert#1\big\rvert}
 \newcommand{\parens}[1]{\left(#1\right)}
 \newcommand{\norm}[1]{\left\| #1 \right\|}
 
@@ -185,6 +189,7 @@ align=center, %
 
 % Set definitions
 \newcommand{\set}[1]{\left\{ #1 \right\}}
+\newcommand{\bigset}[1]{\big\{ #1 \big\}}
 \newcommand{\setst}[2]{\left\{ #1 \, \middle| \, #2 \right\}}
 \newcommand{\bigsetst}[2]{\big\{ #1 \, \big| \, #2 \big\}}
 
@@ -229,6 +234,7 @@ align=center, %
 % Mathbb alphabet
 \newcommand{\C}{\ensuremath{\mathbb C}\xspace}
 \newcommand{\F}{\ensuremath{\mathbb F}\xspace}
+\newcommand{\IG}{\ensuremath{\mathbb G}\xspace}
 \newcommand{\N}{\ensuremath{\mathbb N}\xspace}
 \newcommand{\R}{\ensuremath{\mathbb R}\xspace}
 \newcommand{\IP}{\ensuremath{\mathbb P}\xspace}
@@ -245,6 +251,7 @@ align=center, %
 \newcommand{\Ff}{\mathcal{F}}
 \newcommand{\Pp}{\mathcal{P}}
 \newcommand{\Mm}{\mathcal{M}}
+\newcommand{\Nn}{\mathcal{N}}
 \newcommand{\Tt}{\ensuremath{\mathcal T}\xspace}
 \newcommand{\Ss}{\ensuremath{\mathcal S}\xspace}
 \newcommand{\Uu}{\ensuremath{\mathcal U}\xspace}
@@ -311,6 +318,14 @@ align=center, %
 
 % Algebraic topology
 \newcommand{\HCW}{H^{\mathrm{CW}}}
+
+% Complexity
+\newcommand{\coP}{\mathsf{coP}}
+\newcommand{\Ptime}{\mathsf{P}}
+\newcommand{\NP}{\mathsf{NP}}
+\newcommand{\coNP}{\mathsf{coNP}}
+\newcommand{\PSPACE}{\mathsf{PSPACE}}
+\newcommand{\NPSPACE}{\mathsf{NPSPACE}}
 
 
 % Descriptive Set Theory

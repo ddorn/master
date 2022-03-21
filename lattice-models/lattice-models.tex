@@ -11,6 +11,7 @@
 \newcommand{\Pcond}[2]{\mathbb{P}\hspace{-0.3ex}\left(#1 \middle| #2 \right)}
 \newcommand{\E}[1]{\mathbb{E}\left[#1\right]}
 \newcommand{\Fourrier}{\mathcal F}
+\newcommand{\IE}{\mathbb{E}}
 
 \begin{document}
     \maketitle
@@ -222,7 +223,237 @@
         by a transformation to polar coordinates.
     \end{proof}
 
+    So if $d$ is 1 or 2, $\P{\exists n, S_n = 0} = 1$.
+
+    \begin{corollary}
+        If $d = 1, 2$, for any $x \in \Z^d$, 
+        $\P{\exists n, S_n = x} = 1$.
+    \end{corollary}
+
+    \begin{proposition}
+        Let $d = 1$ and $T_0$ be the random variable indicating the first time $t$ such that 
+        $S_t = 0$. 
+        \[
+            \E{T_0} = \infty.
+        \]
+    \end{proposition}
+
+    \begin{proof}
+        \begin{itemize}
+            \item $\E{T_0} = \sum_{k \geq 0} \P{T_0 > k}$
+            \item $\P(T_0 > k) = 1 - \P{T_0 \leq k}$
+            \item We need to study $P_0(T_0 \leq k)$.
+                For that we separate according to $S_k > 0$ or $S_k \leq 0$,
+                study it conbinatorially, and use the reflexion priinciple.
+        \end{itemize}
+    \end{proof}
+
+    Let $T_{0, N}$ be the first time such that $S_{T_{0, N}} \in \set{0, N}$. 
+    Let $A = \set{0, \dots, N}$.
+
+    \begin{proposition}
+        For any $x \in \set{0, \dots, N}$,
+        \[
+            \IE_x[T_{0,N}] = x(N - x)
+        \]
+    \end{proposition}
+
+    \begin{corollary}
+        \[
+            \IE_0[T_0] = \infty
+        \]
+    \end{corollary}
+
+    \begin{proof}
+        (of proposition)
+        Relations on $\IE_0[T_{0, N}]$:
+        \begin{itemize}
+            \item Boundary condition: $\IE_0[T_{0, N}] = \IE_n[T_{0, N}] = 0$. 
+            \item Bulk condition: $\IE_x[T_{0, N}] = 1 + 
+                \frac{1}{2} \IE_{x-1}[T_{0, N}]
+                + \frac{1}{2} \IE_{x+1}[T_{0, N}]$.
+        \end{itemize}
+
+        With $f: A \to \R$, we define $\Delta f(x) = \frac{1}{2} \parenthesis{
+            f(x - 1) + f(x + 1)
+        } - f(x)$. 
+        
+        Here $\Delta \IE_x[T_{0, N}] = -1$. So 
+        $\IE_x[T_{0, N}]$ satisfies the following DPDE:
+        \[
+            (*) \begin{cases}
+                f(0) = f(N) = 0 \\
+                f\Delta f(x) = -1
+            \end{cases}
+        \]
+
+        We first check that $x \mapsto x(N - x)$ is a solution of $(*)$,
+        then prove unicity of the solution.
+    \end{proof}
+
+    \begin{proposition}
+        \[
+            \IP[S_{T_{0, N}} = 0] = \frac{n - x}{n}
+        \]
+    \end{proposition}
+
+    \begin{proof}
+        We have the following conditions:
+        \begin{itemize}
+            \item $f(0) = 1$
+            \item $f(N) = 0$
+            \item $\IP_x[S_{T_{0, N}} = 0] = 
+                \frac{1}{2} \IP_{x-1} (S_{T_{0, N}})
+                + \frac{1}{2} \IP_{x+1} (S_{T_{0, N}})
+            $ so \[
+                \Delta f(x) = 0
+            \]
+        \end{itemize}
+
+        Then we check that $\frac{n-x}{x}$ satisfies the system, and that the
+        solution is unique.
+    \end{proof}
+
+    \paragraph{The general setting for the DPE.}
+    Let $G \subset \Z^d$ be the induced graph. 
+    $\d G$ is the set of points $(x, y) \in G$ adjacent to
+    points of $G$ not in $G$.
+    We consider $F: \d G \to \R$ and we define the laplacian
+    with $F$ boundary.
+    \[
+        \func{\Delta^F}{\R^G}{\R^G}
+            {f}{\Delta f(x) 
+                = \frac{1}{2d} \sum_{x \sim y} f(y) - f(x)}
+    \]
+    with the convention $f(y) = F(y)$ if $y \d G$.
+
+    \begin{proposition}
+        $\Delta^F$ is bijective.
+    \end{proposition}
+
+    \begin{theorem}
+        For any $F$ on $\d G$ and for all $\rho$ on $G$, 
+        there exists one and only one solution to 
+        \[ 
+            \begin{cases}
+                f(x) = F(x) & \text{on } \d G \\
+                \Delta f(x) = \rho(x) & \text{on } G \\
+            \end{cases}
+        \]
+    \end{theorem}
+
+    Since the problem is linear, we can solve it by studing only
+    \[
+        (1)~\begin{cases}
+            \Delta f = 0 & \text{on } G \\
+            f = F        & \text{on } \d G
+        \end{cases}
+        \andquad
+        (2) \begin{cases}
+            \Delta f = \rho & \text{on } G \\
+            f = 0           & \text{on } \d G
+        \end{cases}
+    \]
+    Which can also be simplified to 
+    \[
+        \begin{cases}
+            \Delta f = 0 & \text{on } G \\
+            f = \delta_y & \text{on } \d G, y \in \d G
+        \end{cases}
+        \andquad
+        \begin{cases}
+            \Delta f = -\delta_y & \text{on } G, y \in G \\
+            f = 0           & \text{on } \d G
+        \end{cases}
+    \]
+
+    The solution to the first problem is $H_G(x, y)$, 
+    the \emph{Harmonic Measure}.
+    The solution to the second problem is $G(x, y)$,
+    the \emph{Green function}.
+
+    The solution to $(1)$ is thus \[
+        \sum_{y \in \d G} f(y)H_G(x, y)
+    \],
+    and the solution to $(2)$ is \[
+        \sum_{y \in G} -\rho(x)G(x, y)
+    \].
+
+    \paragraph{A probabilistic interpretation of $H_G, G$.}
+    For $(1)$, the discret Dirichlet problem,
+    \[
+        H_G(x, y) = \IP_x(S_{T_{\d g}} = y)
+    \]
+    So the global solution is $\IE_x[F(S_{T_{\d g}})]$.
+
+    For $(2)$, it is $G(x, y) = \E{\text{Number of visits at } y < T_{\d G}}$.
+    Which translates too \[
+        \IE_x \left[ 
+            \sum_{n = 0}^{T_{\d G} - 1} 
+                -\rho(S_n)
+        \right]
+    \]
+
+    So the global solution is \[
+        \IE_x\left[ 
+            \sum_{n = 0}^{T_{\d G} - 1} 
+                -\rho(S_n)
+            + F(S_{T_{\d G}})
+         \right]
+    \]
+
+    \subsection{Discrete Heat equation}
+
+    Let I$f(n, x)$, $n \in \N$, $x \in \IG \cup \d \IG$.
+    Let $\d_n f(n, x) = f(n + 1, x) - f(n, x)$.
+
+    \begin{definition}
+        \[
+            \begin{cases}
+                \d_n f = \Delta f \\
+                f(0, x) = F & \forall x \in \IG \\
+                f(n, x) = G & \forall n, \forall x \in \d \IG
+            \end{cases}
+        \]
+    \end{definition}
+
+    Let \[
+        f(n, x) = \begin{cases}
+            \IP_x(S_{n \wedge T_{\d G}} = y) & \tif y \in \IG \\
+            0 & \otherwise.
+        \end{cases}
+    \]
+
+    It turns out that $f$ is a solution to the discrete heat equation:
+    \[
+        \begin{cases}
+            \d_n f = \Delta f \\
+            f(0, y) = 0 & \forall y \in \IG \\
+            f(n, y) = \delta_{x = y} & \forall n, \forall y \in \d \IG
+        \end{cases}
+    \]
+
+    In 1D, we have $f(n + 1, y) = \frac{1}{2}(f(n, x-1) + f(n, x+1))$,
+    so $f(n+1, -) = Qf(n, -)$, where \[
+        Q = \begin{pmatrix*}
+            0 & 1/2 & 0 & \dots & 0 \\
+            1/2 & 0 & 1/2  && \vdots\\
+            0 & 1/2 & \ddots && 0 \\
+            \vdots &&& 0 & 1/2 \\
+            0 & \dots & & 1/2 & 0 \\
+        \end{pmatrix*}    
+    \]
+    
+
 
     \newpage
     .
+
+    \[  
+        \norm{A} = \sup \set{\abs{
+            \langle Ax, x \rangle
+        } :
+            x \in X, \norm{x} \leq 1
+        }
+    \]
 \end{document}

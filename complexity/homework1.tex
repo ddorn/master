@@ -1,5 +1,7 @@
 \input{../preambule.tex}
 
+\usepackage[backend=biber,style=alphabetic]{biblatex}
+\addbibresource{biblio.bib}
 
 \title{Homework 1}
 \author{Diego Dorn}
@@ -27,19 +29,19 @@
         Let $\Mm$ be a decisive Turing machine,
         we build a decisive Turing machine $\compl{\Mm}$
         that runs exactly the same way as $\Mm$, but on each branch,
-        when it halts it outputs \textit{yes} when $\Mm$ outputs \textit{no}
+        when it halts, it outputs \textit{yes} when $\Mm$ outputs \textit{no}
         and \textit{no} when $\Mm$ outputs \textit{yes}. The \textit{maybe} 
-        do not change. This way $\compl{\Mm}$ accepts a word $x$ if and only
+        do not change. This way, $\compl{\Mm}$ accepts a word $x$ if and only
         if $\Mm$ does not accept $x$. 
         Thus $L(\compl{\Mm}) = \compl{L(\Mm)}$.
         Using the hypothesis with $\compl{\Mm}$, 
-        we get that $L(\compl{\Mm}) = \compl{L(\Mm)} \in \NP$
+        we get that $\compl{L(\Mm)} = L(\compl{\Mm})  \in \NP$
         and therefore $L(\Mm) \in \coNP$.
     \end{proof}
 
     We now prove that for a polytime decisive Turing machine $\Mm$, 
     $L(\Mm) \in \NP$.
-    To that extent, we construct a polytime verifier $V(x, C)$ for $L$
+    To that extent, we construct a polytime verifier $V(x, C)$ for $L(\Mm)$
     as follows:
     \begin{itemize}
         \item If $C$ doesn't encode a sequence of transitions of $\Mm$, reject $x$. 
@@ -61,7 +63,7 @@
     of the computation that outputs \textit{yes} and an other one that outputs \textit{no}.
     
     For the first direction, there is a branch of the computation of 
-    $\Mm$ on input $x$ that halts on a \textit{yes} or $\textit{no}$,
+    $\Mm$ on input $x$ that halts on a \textit{yes},
     so it suffices to take $C$ as the sequence of transitions
     that make up that branch.
 
@@ -71,6 +73,9 @@
     Since there is a branch of $\Mm$ that outputs \textit{yes},
     all the other branches must outputs \textit{yes} or \textit{maybe}
     and thus $\Mm$ accepts $x$.
+
+    Therefore, $L(\Mm) \in \NP$ and by the lemma, we have that for all 
+    decisive Turing machine $\Mm$, $L(\Mm) \in \NP \cap \coNP$.
 
 
     \section*{Exercice 2}
@@ -93,22 +98,21 @@
         \item $E' = \setst{
             \bigparenthesis{(u, i), (v, j)} \in V' \times V'
         }{
-            (u, v) \in V \vee (u = v \wedge j = 1 - i)
+            (u, v) \in V \vee (u = v \wedge j \neq i)
         }$, that is, two vertices are connected in $G'$
-        if their first coordinate are connected in $G$
-        or if they their first coordinate is the same and the second coordinate
-        are different.
+        if their first coordinates are connected in $G$
+        or if they are different but have the same first coordinate.
     \end{itemize}
 
     Our reduction from \textsc{IndSet} to \textsc{SepMatch}
-    if the function that maps and input of \textsc{IndSet}
-    $\angles{G, k}$ to the input of \textsc{SepMatch} $\angles{G', k}$.
+    if the function that maps an input $\angles{G,k}$ of \textsc{IndSet}
+    to the input $\angles{G',k}$ of \textsc{SepMatch} .
 
     Before proving that this is indeed a reduction, we notice that this map 
     is computable in polynomial time and we setup some notations and a lemma.
     Let $d_G$ and $d_{G'}$ the distances between vertices of $G$ and $G'$
     respectively. For a node $u \in G'$, we write $u = (u_0, u_1)$,
-    and $\pi_0$ the projection on the first coordinate, so $\pi_0(u) = u_0$.
+    and $\pi_0: G' \to G$ the projection on the first coordinate, so $\pi_0(u) = u_0$.
 
     \begin{lemma*}
         For all $u, v \in V'$ with $u_0 \neq v_0$, \[
@@ -124,7 +128,7 @@
         less than the distances in $G'$.
 
         It remains to be shown that $d_{G'}(u, v) \leq d_G(u_0, v_0)$.
-        Let $\w = w_0\w_1\dots\w_n$  be a path from $u_0$ to $v_0$ in $G$. We
+        Let $\w = \w_0\w_1\dots\w_n$  be a path from $u_0$ to $v_0$ in $G$. We
         construct a path $\w_{G'}$ from $u$ to $v$ of the same length 
         in $G'$. For $i = 0, \dots, n$,
         \[ 
@@ -133,7 +137,7 @@
                 (\w_i, v_1) & \tif i > 0
             \end{cases}
         \]
-        This is clearly a path in $G'$ from $(\w_0, u_1) = u$ to $(\w_n, v_1) = v$
+        If $u_0 \neq v_0$, this is a path in $G'$ from $(\w_0, u_1) = u$ to $(\w_n, v_1) = v$
         since at any step $\w_i$ is a neighbour of $\w_{i+1}$.
         Thus distances in $G'$ are at most distances in $G$.
     \end{proof}
@@ -206,9 +210,9 @@
 
     \paragraph{2.}
     Let $ \Bb = \left\{ B : \forall n \abs{B \cap \set{0, 1}^n} = 1 \right\} $,
-    and for $B \in \Bb$, let $
-        L_B = \setst{1^n}{ \exists x \in \set{0, 1}^{n-1}, 0x \in B}
-    $.
+    and for each $B \in \Bb$, we set \[
+        L_B = \setst{1^n}{ \exists x \in \set{0, 1}^{n-1}, 0x \in B}.
+    \]
 
     \begin{claim}
         For all $B \in \Bb$, $L_B \in \NP$.
@@ -237,73 +241,85 @@
         where the last equality follows from the the fact that
         $\abs{B \cap \set{0, 1}^n} = 1$.
         With $\compl{L_B}$ written as such, we can apply the same proof as the previous
-        claim, mutatis mutandis.
+        claim, mutatis mutandis, $\compl{L_B} \in \NP$.
     \end{proof}
 
     \begin{claim}
         There exist $B \in \Bb$ such that $L_B \notin \Ptime^B$.
     \end{claim}
     \begin{proof}
-        Fix an enumeration $(M_n)_{n \in \N}$ of all oracle compatible Turing machines,
-        and let $b: \N \to \N \times \N$ be any bijection.
-        We define the sequence $\Mm_n = M_{b(n)_0}$ that contains each Turing machine
-        infinitely many times.
+        Fix an enumeration $(\Mm_i, p_i)_{i \in \N}$ of all pairs
+        of oracle compatible Turing machines,
+        and positive polynomials\footnote{
+            The trick of bounding machines via polynomials
+            is due to \cite{baker1975relativizations}
+            and allows a formal definition of the oracle.
+            Appart from this idea, the rest of the proof is my own work.
+            The first version of my proof assumed that 
+            we can ignore the queries outside the range where 
+            we tried to fool $\Mm_i$, but it is absolutely 
+            not the case. Searching in my notes then on the
+            web lead to many incorrect proofs then this one
+            that I now cannot unsee
+            and acknowledges.
+        }.
 
-        We now construct $B$ so that it fools each machine $M_n$ that runs in
-        polynomial time.
-        Fix $n \in N$, we now construct the $x \in \set{0, 1}^n$
-        that belongs to $B$.
-        We run $\Mm_n$ on $1^n$, and let $Q_k$ be the set of queries 
-        that $\Mm_n$ has asked up to the $k$-th
-        step of execution (not included).
-        For $i \in \set{0,1}$, we define $Q_k^i = \setst{q \in Q_k^i}{\abs{q} = n \andd q_0 = i}$
-        the set of queries of length $n$ that start with a $i$.
-        At step $k$, if the machine queries ``$q \in B$?'':
+        We would like an oracle $\bar B$
+        that fools each polytime machine at least once.
+        For that, we now construct iteratively a set $B$ and its complement $B'$
+        that is, at each step we can add inputs to either $B$ or $B'$
+        consistently and the final oracle will satisfy $\bar B \supset B$ and 
+        $\compl{\bar B} \supset B'$.
+        Let $n_0 = 0$.
+
+        At step $i$, let $n > n_{i}$ such that
+        $2^{n-1} > p_i(n)$.
+        We run $\Mm_i$ on $1^n$ for $p_i(n)$ steps.
+        At any step, if the machine asks the oracle for the string $q$:
         \begin{itemize}
-            \item if $q \notin \set{0, 1}^n$, we can \textit{yes} if and only 
-                if $q = 0^{\abs{q}}$, which would not change the output of 
-                a $\Mm_n$ on input $x$ that recognises any fixed $B$.
-            \item if $q \in Q_k$, the query has been already made, so 
-                we answer the same as the previous time the machine made this query.
-            \item if $q \notin Q_k$ and for some $i \in \set{0, 1}$, $\abs{Q_k^i} = 2^n$, 
-                that is, the set $i\concat \set{0, 1}^{n-1}$
-                was completely queried before, we must have $q \in (1-i)\concat \set{0, 1}^{n-1}$
-                so we say say that $q \notin B$.
-            \item otherwise, if $\abs{Q_k^{q_0}} = 2^n -1$, that is, 
-                $q$ is the last non-queried entry that start with $q_0$,
-                we say that $q \in B$
-            \item otherwise we say that $q \notin B$.
+            \item if $q \in B$, reply \textit{yes}.
+            \item if $q \in B'$, reply \textit{no}.
+            \item if $\abs{\set{x \in B' : |x| = |q|}} = 2^{\abs{q}} - 1$,
+                that is, all the queries of size $|q|$ but the current one
+                have been made, reply \textit{yes} and add $q$ to $B$.
+            \item otherwise, reply \textit{no} and add $q$ to $B'$.
         \end{itemize}
-
-        When the machine halts, if it hasn't queried all of both
-        $i \concat \set{0, 1}^{n}$, for $i = 0, 1$,
-        if the machine outputs: \begin{itemize}
-            \item \textit{yes},
-                let $x \in \setst{1y \in \set{0, 1}^n}{\forall k, 1y \notin Q_k^1}$.
-            \item \textit{no},
-                let $x \in \setst{0y \in \set{0, 1}^n}{\forall k, 0y \notin Q_k^0}$.
+        
+        When the machine halts or after $p_i(n)$ steps,
+        it has not queried all of 
+        the strings of size $n$ that start with
+        a 0 nor those that start with a 1,
+        since it ran in $p_i(n) < 2^{n-1}$ steps.
+        All its queries of size $n$ are in $B'$.
+        Now, if the machine: \begin{itemize}
+            \item halts on \textit{yes},
+                add one string of size $n$ starting
+                with 1 to $B$, and all the other strings of size $n$ to $B'$
+            \item halts on \textit{no}, do the same but taking a string
+                that starts with 0.
+            \item does not halt in less than $p_i(n)$ steps,
+                we do the same as if it halted on \textit{no}.
         \end{itemize}
-        We set $B \cap \set{0, 1}^{n} = \set{x}$, which is a number that $\Mm_n$
-        did not query and that make its prediction fail.
+        Finally, set $n_{i+1} = 2^n$ and proceed to step $i+1$. 
+        Notice that neither $B$ nor $B'$
+        contain strings of length $2^n$ because the machine ran for less than $2^n$
+        steps.
 
-        Thus, with the $B$ as constructed, if a machine $\Mm_n$ doesn't query 
-        at least all the sequences in $\set{0, 1}^n$ that start with 0
-        or all the sequences that start with 1,
-        it fails.
-        Therefore we only need to show that every polytime machine $M_N$
-        don't query enough the oracle on large inputs.
-        Indeed, fix a polytime machine $M_N$
-        and define a subsequence
-        $(\Mm_{n_k})_{k \in \N} \subset (\Mm_n)_{n \in \N}$ 
-        such that for all $k \in \N$, $M_{n_k} = M_N$.
-        However, since $n^{\O1} << \O{2^n}$, there must be some $k \in \N$,
-        such that $\Mm_{n_k}$ doesn't make $2^{n_k} - 1$ queries and therefore fails.
-        Thus, $M_N$ fails on input $1^{n_k}$, and there is no polynomial time
-        machine that decides $L_B$.
+        \paragraph{} At the end, set $\bar B$ to any set in $\Bb$ such
+        that $B \subset \bar B$ and $B' \cap \bar B = \emptyset$.
+        Now take any turing machine $M$ with oracle $\bar B$ 
+        with runtime bounded by some polynomial $p$. 
+        We have that $(M, p)$ belongs to the enumeration $(\Mm_i, p_i)_{i \in \N}$
+        at, say, index $i$. 
+        Now if we look at the construction of $\bar B$ at step $i$, 
+        we have that the machine was ran for $p_i(n)$ steps,
+        so it stoped ``naturally'' and thus its output does not
+        correspond to wether $1^{n_i} \in L(\bar b)$ and $L(\bar B) \notin \Ptime^{\bar B}$.
     \end{proof}
 
-    Therefore, $L_B \in \NP^B \cap \coNP^B \setminus \Ptime^B$.
+    Using the three claims, $L_B \in \NP^B \cap \coNP^B \setminus \Ptime^B$.
 
+    \printbibliography
 
     \newpage
     .

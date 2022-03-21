@@ -1,0 +1,209 @@
+\input{../preambule.tex}
+
+\title{Homework 3}
+\author{Diego Dorn}
+% \date{Automn 2021}
+
+\newcommand{\Eq}{\textsc{Eq}\xspace}
+\newcommand{\Iso}{\textsc{Iso}\xspace}
+\newcommand{\REF}{\textsc{Ref}\xspace}
+\newcommand{\SI}{\textsc{SI}\xspace}
+\newcommand{\Rcc}[1]{\mathrm{R}^{cc}_{1/3}\parenthesis{#1}}
+\newcommand{\Dcc}[1]{\mathrm{D}^{cc}\parenthesis{#1}}
+
+
+\begin{document}
+    \maketitle
+
+    \section*{Exercise 1}
+
+    \begin{claim}
+        $f$ has sensitivity $s(f) \leq \O{n}$.
+    \end{claim}
+    \begin{proof}
+        We first show that $s(f) \leq \O{n}$.
+        Let $x \in \set{0, 1}^{n^2}$ be an input of the problem.
+        We want to show that $s(f, x) \leq \O{n}$. 
+
+        If $f(x) = 0$,
+        we show that each row has at most 3 sensitive bits, which yields the result.
+        Let $w$ be the number of ways to make the row paired.
+        \begin{itemize}
+            \item if a row has 0, 2, or 4+ bits set, changing a bit produces 
+                string of odd hamming weight and thus not paired, so $w = 0$.
+            \item if a row has one bit set, flipping one of its neighbours
+                are the only way to change the output, so $w \leq 2$.
+            \item if a row has three bits set, flipping any of those three bits
+                are the only way to get to exactly two bits set, and thus there are
+                at most three ways to pair the row, so $w \leq 3$.
+        \end{itemize}
+
+        Now if $f(x) = 1$, and there is more than one row which is paired,
+        then there is no way to make them all of them unpaired by flipping only one 
+        bit, so $s(f, x) = 0$.
+
+        Finally, if $f(x) = 1$, and there is exactly one paired row, the only
+        ways to make the row unpaired is by flipping one of the bits of the row,
+        so $s(f, x) = n$.
+        
+        In each case, $s(f, x) \leq 3n$ so $s(f) \leq \O{n}$.
+    \end{proof}
+
+    \begin{claim}
+        $f$ has block sensitivity $bs(f) \geq \Omega(n^2)$.
+    \end{claim}
+    \begin{proof}
+        It suffices to exibit an input $x$ of $f$ which has block-sensitivity
+        $bs(f, x) = \Omega(n^2)$.
+        We take $x = 0^{n^2}$, and for each $i = 1, \dots, n^2/2$
+        the subsets $S_i = \set{2i-1, 2i}$.
+        Clearly, the $S_i$ are disjoints and for each $i$, $f(x^{S_i}) = 1 \neq f(x) = 0$.
+        Thus, $bs(f, x) \geq n^2/2$ and therefore $bs(f) \geq n^2/2 \geq \Omega(n^2)$.
+    \end{proof}
+
+    \section*{Exercice 2}
+    \paragraph{a)}
+    We know that $\Rcc{\Eq_{n^2}} = \O{1}$, so
+    we reduce $\Iso_n$ to it, which will prove that $\Rcc{\Iso_n} = \O{1}$.
+    To that extent, both Alice and Bob compute a cannonical form of their
+    graph, for instance the graph in the equivalence class of their graph
+    with the lexicographically least adjency matrix. This adjency matrix
+    can be represented as a $n^2$ bit string, 
+    and the two strings will be equal if and only if the graphs were isomorphic.
+
+    Since the best randomized protocol for equality satisfies 
+    $\Rcc{\Eq_{n^2}} = \O{1}$, the same holds for $\Iso_n$.
+
+    \paragraph{b)}
+    We know that 
+    $\Dcc{\Eq_n} = \Omega(n)$
+    and thus
+    $\Dcc{\Eq_{n^2}} = \Omega(n^2)$.
+    We reduce $\Eq_{n^2}$ to $\Iso_{7n}$
+    which shows that $\Dcc{\Iso_n} = \Omega(n^2)$.
+
+    From a $n^2$ bit string $x$, we construct the graph $G_x$
+    on $7n$ vertices with labels $k_1, \dots, k_{3n}$, $s_1, \dots, s_{2n}$ and $a_1, \dots, a_{2n}$
+    by describing which edges belong to the graph:
+    \begin{itemize}
+        \item Each pair $k_i$, $k_j$ is connected, 
+            making a copy of $K_{3n}$, the complete graph on $3n$ vertices.
+        \item For $i = 1, \dots, 2n$, there is an edge between 
+            $a_i$ and $k_1, \dots, k_i$, 
+            making $a_i$ have exactly $i$ neighbours in the copy of $K_{3n}$.
+        \item For $i = 1, \dots, 2n$, there is an edge between 
+            $a_i$ and $s_i$.
+        \item Let $b: [n^2] \to \setst{\set{a_i, a_j}}{i \neq j \in [2n]}$ be any injection from $[n^2]$ to the set of edges 
+            between $a_i$'s. This injection exists, since the size of the set of edges 
+            is $\frac{2n(2n - 1)}{2} \geq n^2$.
+            Finally, for each $i \in [n^2]$ such that $x_i = 1$,
+            there is the edge $b(i)$.
+    \end{itemize}
+
+    For instance for $n = 3$, we get this graph:
+
+    \begin{center}
+    \begin{tikzpicture}
+        \node[regular polygon, draw] (K3n) {$K_{3n}$};
+        \foreach \x in {1, ..., 6} {
+            \node[draw, circle] (a\x) at ($(K3n) + (\x - 3.5, -2)$) {$a_{\x}$};
+            \foreach \i in {1, ..., \x} \draw (a\x) edge[out=90, in=-90+\x*20-4*20+8*\i] (K3n) ;
+            \node[draw, circle] (s\x) at ($(a\x) + (0, -1.5)$) {$s_{\x}$} edge (a\x);
+            \foreach \i in {1, ..., \x} 
+                \draw (s\x) edge[dashed,out=-90,in=-90] (s\i);
+        };
+    \end{tikzpicture}
+    \end{center}
+    Where the edges between the $s_i$ are set or not depending on
+    the string $x$. As a sanity check, note that here there are 
+    15 edges that can be set which leaves enough place to encode
+    the $n^2 = 3^2 = 9$ bits in the string $x$.
+
+    We now show that the function that maps $(x, y) \mapsto (G_x, G_y)$
+    is indeed a reduction from $\Eq_{n^2}$ to $\Iso_{7n}$.
+    First, if $x = y$, $G_x = G_y$ by construction and the two
+    graphs are isomorphic.
+    
+    For the reverse direction, assume that $G_x \simeq G_y$,
+    and the the isomorphism is realised by $f: G_x \to G_y$.
+    The two graphs are on the same set of vertices, $k_i$, $a_i$, $s_i$ 
+    so $f$ corresponds to a permutation of those vertices.
+    If we show that $f(s_i) = s_i$
+    we will be done, as for all $i \in [n^2]$, 
+    \[
+        x_i = 1 \iff b(i) \in E(G_x) \iff f(b(i)) \in E(G_y)
+        \iff b(i) \in G(y) \iff y_i = 1
+    \],
+    where the second last equivalence is because $f$ fixes each $s_i$.
+
+    To show that $f(s_i) = s_i$ for all $i \in [2n]$, we use
+    the fact that the set of vertices of $G_x$ that verify a given property
+    must be mapped by $f$ to the set which verify the same
+    property in $G_y$.
+    We then proceed in three steps:
+    \begin{itemize}
+        \item Let $K = \setst{k_i}{i \in [3n]}$ be the set of all $k_i$.
+            Then $f(K) = K$, since $K$ is the unique $3n$-clique in both $G_x$
+            and $G_y$.
+        \item For $i \in [2n]$, $f(a_i) = a_i$, indeed, for both graphs,
+            $a_i$ is the only vertex adjacent to $K$ with degree $i + 1$.
+        \item For $i \in [2n]$, $f(s_i) = s_i$, indeed $s_i$ is the only
+            neighbour of $a_i$ not in $K$, and since both $a_i$ and $K$
+            are fixed, we must have $f(s_i) = s_i$.
+    \end{itemize}
+
+    Therefore, $x = y \iff G_x \simeq G_y$ and $\Eq_{n^2}$ reduces to $\Iso_{7n}$,
+    so $\Iso_{7n} \geq \Omega(n^2)$ and $\Iso_n \geq \Omega(n^2)$.\qed
+    
+
+    \section*{Exercice 3}
+    We know that $\Dcc{\SI_n} = \Omega(n)$, where $\SI$ is
+    the set-intersection problem,
+    and therefore $\Dcc{\compl\SI_n} = \Omega(n)$,
+    where $\compl\SI$ is the complement of $\SI$,
+    i.e. set-non-intersection.
+    We reduce $\compl\SI_n$ to $\REF_{n+1}$ to prove the lower bound.
+
+    Let $a \in \set{0, 1}^n$ and $b \in \set{0, 1}^n$ be Alice and Bob's input
+    for $\compl\SI_n$ respectively.
+    We define $A = \setst{i \in [n]}{a_i = 1} \cup \set{n + 1}$
+    and similarly $B = \setst{i \in [n]}{b_i = 0} \cup \set{n + 1}$.
+    Notice that:
+    \begin{align*}
+        (a, b) \in \compl\SI_n 
+        &\iff a \cap b = \emptyset 
+        \\& \iff \forall i \in [n],~ a_i = 1 \implies b_i = 0
+        \\& \iff A \subset B
+    \end{align*}
+
+    Our reduction to $\REF_{n+1}$ is then 
+    \[
+        \mathcal P = \set{A} \cup 
+        \bigcup_{\substack{i \in [n] \\ a_i = 0}}
+            \set{\set{i}}
+    \]
+    \[
+        \mathcal Q = \set{B} \cup 
+        \bigcup_{\substack{i \in [n] \\ b_i = 1}}
+            \set{\set{i}}
+    \]
+    which are the partitions containing $A$ (resp. $B$) and the rest as singletons.
+
+    It remains to show that $\mathcal P \sqsubseteq \mathcal Q \iff a \cap b = \emptyset$, but
+    \begin{align*}
+        \mathcal P \sqsubseteq \mathcal Q 
+        & \iff \forall P \in \mathcal P, \exists Q \in \mathcal Q,~ P \subset Q
+        \\& \iff \exists Q \in \mathcal Q,~ A \subset Q
+        \\& \iff A \subset B
+        \\& \iff (a, b) \in \compl\SI_n
+    \end{align*}
+    Where the second line comes from the fact that the condition is always met
+    for singletons, and the only non-singleton element of $\mathcal P$
+    is $A$. The third line comes from the fact that $n + 1 \in A$
+    and the only set that contains $n + 1$ in $\mathcal Q$ is $B$, 
+    so if $A$ is a subset of some part of $\mathcal Q$, it must be $B$.
+
+    Thus, solving $\compl\SI_n$ is simpler than solving $\REF_{n+1}$ and 
+    can be done only in $\Omega(n)$, so the same is true for $\REF_{n+1}$
+
+\end{document}

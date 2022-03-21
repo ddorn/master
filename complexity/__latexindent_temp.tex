@@ -1,0 +1,62 @@
+\input{../preambule.tex}
+
+\title{Homework 2}
+\author{Diego Dorn}
+% \date{Automn 2021}
+
+\newcommand{\klotski}{\textsc{Klotski}\xspace}
+\newcommand{\UniqueSAT}{\textsc{UniqueSat}\xspace}
+\newcommand{\UnSAT}{\textsc{UnSat}\xspace}
+
+\begin{document}
+    \maketitle
+
+    \section*{Exercise 1}
+    Using Savtich's theorem, it suffices to show that 
+    $\klotski \in \NPSPACE$. 
+
+    An non deterministic algorithm that solves \klotski
+    in polynomial space is the following (in Python notation):
+
+    \begin{lstlisting}[language=python]
+        def klotski(board):
+            for i in range(2 ** board.size):
+                if red_piece_on_exit(board): 
+                    return True
+            
+                guess next_move
+                apply(next_move, board)
+            return False
+    \end{lstlisting}
+
+    Where \texttt{guess} chooses a move randomly and \texttt{apply}
+    modifies the board according to the chosen move. It is clear that
+    \texttt{apply} can be implemented to use a space polynomial
+    in the size of the board configuration and similarly for 
+    \texttt{red\_piece\_on\_exit}.
+    Thus, this algorithm operate with polynomial space.
+
+    This algorithm always terminates with the right answer since
+    if a board can be solved, it can be solved without going twice 
+    through the same configuration, and thus all boards can be solved 
+    in less than $2^n$ moves, where $n$ is the length of the input, 
+    assuming that for all board configuration on a given square
+    their description have the same length $n$.
+
+    \section*{Exercice 2}
+
+    We first show that \UniqueSAT is $\coNP$-hard.
+    To that extent, we reduce \UnSAT to it.
+
+    Let $\p$ be a DNF formula which is an input of \UnSAT,
+    we construct a $\p'$ that has a unique solution if and only if 
+    $\p$ is unsatisfiable. 
+    Let $(C_i)_{i < m}$ be the $m$ clauses of $\p$,
+    Let $x_1, \dots, x_n$ be the variables
+    appearing in $\p$ and $z$ be a 
+
+    \section*{Exercice 3}
+
+    \newpage
+    .
+\end{document}

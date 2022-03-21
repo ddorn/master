@@ -1,0 +1,149 @@
+\input{../preambule.tex}
+
+\title{Homework 2}
+\author{Diego Dorn}
+% \date{Automn 2021}
+
+\newcommand{\klotski}{\textsc{Klotski}\xspace}
+\newcommand{\UniqueSAT}{\textsc{UniqueSat}\xspace}
+\newcommand{\UnSAT}{\textsc{UnSat}\xspace}
+\newcommand{\SAT}{\textsc{Sat}\xspace}
+
+\begin{document}
+    \maketitle
+
+    \section*{Exercise 1}
+    Using Savtich's theorem, it suffices to show that 
+    $\klotski \in \NPSPACE$. 
+
+    An non deterministic algorithm that solves \klotski
+    in polynomial space is the following (in Python notation):
+
+    \begin{lstlisting}[language=python]
+        def klotski(board):
+            for i in range(2 ** board.size):
+                if red_piece_on_exit(board): 
+                    return True
+            
+                guess next_move
+                apply(next_move, board)
+            return False
+    \end{lstlisting}
+
+    Where \texttt{guess} chooses a move randomly and \texttt{apply}
+    modifies the board according to the chosen move. It is clear that
+    \texttt{apply} can be implemented to use a space polynomial
+    in the size of the board configuration and similarly for 
+    \texttt{red\_piece\_on\_exit}.
+    Thus, this algorithm operate with polynomial space.
+
+    This algorithm always terminates with the right answer since
+    if a board can be solved, it can be solved without going twice 
+    through the same configuration, and thus all boards can be solved 
+    in less than $2^n$ moves, where $n$ is the length of the input, 
+    assuming that for all board configuration on a given square
+    their description have the same length $n$.
+
+    \section*{Exercice 2}
+
+    We first show that \UniqueSAT is $\coNP$-hard.
+    To that extent, we reduce \UnSAT to it.
+
+    Let $\p$ be a DNF formula which is an input of \UnSAT,
+    we construct a $\p'$ that has a unique solution if and only if 
+    $\p$ is unsatisfiable. 
+    Let $(C_i)_{i \leq m}$ be the $m$ clauses of $\p$,
+    $x_1, \dots, x_n$ be the variables
+    appearing in $\p$ and $z$ be a new variable.
+    Now we set \[
+        \p' = 
+            \bigwedge_{i = 0}^n (\bar z \vee x_i)
+            \wedge
+            \bigwedge_{i = 0}^m (z \vee C_i)
+    \]
+
+    The assignements that satisfy this formulas are:
+    \begin{itemize}
+        \item if $z \mapsto 1$, the only solution is $x_i \mapsto 1$ for all $i$
+            because of the first part of the formula.
+        \item if $z \mapsto 0$, the solutions are the same as the solutions for $\p$
+            with the added assignement of $z$.
+    \end{itemize}
+
+    Thus, if $\p$ is unsatisfiable then $\p'$ has exactly one assignement, with $z \mapsto 1$
+    and if $\p$ has at least one satisfying assignement, it has exactly one more.
+    Therefore $\p \in \UnSAT \iff \p' \in \UniqueSAT$
+    and $\UnSAT \leq \UniqueSAT$.
+
+    We have the following chain of reductions \[
+        \SAT \geq \UniqueSAT \geq \UnSAT \geq \compl\UniqueSAT \geq \SAT
+    \]
+    where the first reduction is the hypothesis of the exercice,
+    we just proved the second, the third comes from the fact that 
+    if $\UniqueSAT \in \NP$, then $\compl\UniqueSAT \in \coNP$
+    and the last reduction is the same as the second, 
+    but with complements of the languages.
+
+    All together, we have an equivalence between $\SAT$ and $\UnSAT$
+    and $\NP = \coNP$.
+
+
+    \section*{Exercice 3}
+
+    Let $f : \set{0, 1}^n \to \Z$ be any function, $t < 2^n$ an integer
+    and $s = 2^{n} / t$ represents the maximum number of steps of the algorithm.
+    We use the following algorithm to find a local minimum of $f$:
+    \begin{itemize}
+        \item let $x_1 = \mathrm{argmin}_{i < t} f(r_i)$
+            where $r_i \in \set{0, 1}^n$ are random strings.
+        \item for $i = 1, \dots, s$
+        \begin{itemize}
+            \item let $x_{i+1} = \mathrm{argmin}_{y} f(y)$, where the $\mathrm{argmin}$
+                is taken over the $n$ strings that differ from $x$ by one bit.
+            \item if $f(x_i) \leq f(x_{i+1})$, we have found a local minimum 
+                so we stop and return $x_i$ (no need to make any query at this step, 
+                we can store the results of $f$ we already queried before).
+            \item otherwise continue the loop
+        \end{itemize}
+        If we did not find a local minimum in the $t$ steps, we have failed
+        so ew return a random string.
+    \end{itemize}
+
+    When are we sure that this randomised algorithm produces a correct result ?
+    Let $p_0, \dots, p_{2^n}$ be an enumeration of the strings in $\set{0, 1}^n$
+    such that for all $i <j$ we have $f(p_i) \leq f(p_j)$.
+    Now the string $x_0$ is one of the $p_i$, so let $N$ be such that $x_0 = p_N$.
+    
+    We show that if $N < s$, then the algorithm will produce the correct value.
+    Indeed at each step, $f(x_{i+1}) < f(x_i)$, so we take a $p_i$
+    with a smaller index everytime
+    (except if the algorithm stops early, but then there we are done).
+    Thus we either reach $p_0$, a global minimum in less than $s$ steps
+    or a local minimum earlier.
+
+    Now let $S = \set{p_0, \dots, p_{t-1}}$.
+    The failure probability is 
+    \begin{align*}
+        \IP(\forall i < t, r_i \notin S) 
+        &= \prod_{i < t} \IP(r_i \notin S) & (\text{independance})
+        \\&= \IP(r_0 \notin S)^t              & (\text{same law})
+        \\&= \parenthesis{1 - \frac{\abs{S}}{2^n}}^t
+        \\&= \parenthesis{1 - \frac{2^{n}}{t2^n}}^t
+        \\&= \parenthesis{1 - \frac{1}{t}}^t
+        \\&< e^{-1} < 1/2
+    \end{align*}
+
+    Where the last line follows from the fact the 
+    sequence $\parenthesis{1 - 1/n}^n$ converges to $e^{-1}$ from below.
+    Therefore, our algorithm is a randomised bounded error algorithm.
+
+    Finally, we see that the algorithm makes $t$ queries at the start
+    then at most $n$ for each of the (at most) $s$ iterations of the loop,
+    so the total number of queries $T \leq sn + t = ns^n/t + t$.
+    In order to minimize $T$ we can set $t = 2^{n/2}\sqrt{n}$
+    and we have that $T = \O{2^{n/2}\sqrt{n}}$ as required.
+
+
+    \newpage
+    .
+\end{document}
