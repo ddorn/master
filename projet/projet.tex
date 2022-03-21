@@ -1,10 +1,48 @@
 \input{../preambule.tex}
 
-\title{Modal logic, $\mu$-calcul and others}
+\title{Modal logic, $\mu$-calcul, parity games and others}
 \author{Diego Dorn}
 
 \begin{document}
     \maketitle
 
-    
+    \section{Introduction}
+
+    \subsection{The parity game}
+    \begin{definition}
+        The \emph{parity game} is an inifinite two player game
+        played on a directed graph $G = (V, E)$. Let $V_0, V_1$
+        be a partition of the vertices of $G$, and $p: V \to \N$
+        any function, called the \emph{priority function}.
+        Let also $v_0 \in V$ be the strating point of the game.
+
+        The game goes as follows: 
+        \begin{itemize}
+            \item It starts at $v_0$
+            \item At a given turn $i$, if $v_i \in V_0$,
+                player 0 decides to move to an adjacent node 
+                $v_{i+1}$. Otherwise if $v_i \in V_1$, it is 
+                player 1 that picks a neighbourg.
+            \item After $\w$ turns, they produce a sequence of vertices 
+                $(v_n)_{n \in \N} \in V$. Let $V^\infty$ be the set of
+                vertices that have been visited infinitely many times.
+                If $\max \setst{p(v)}{v \in V^\infty}$ is even, player 0 
+                wins. If it is odd, player 1 wins.
+        \end{itemize}
+
+    \end{definition}
+
+    \[  
+        W = \setst{b \in T}{
+            \exists z \in V ~ \forall z' \in V \left(
+                \begin{array}{c}
+                    p(z) \even
+                    \\ \wedge \\
+                    \existsinf i,~ v_i = z
+                    \\ \wedge \\
+                    p(z') > p(z) \implies \exists N \forall n > N v_n \neq z'
+                \end{array}
+            \right)
+        }
+    \]
 \end{document}

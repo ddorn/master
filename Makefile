@@ -2,7 +2,7 @@ LATEX = latexmk
 
 .PHONY: all homotopy analysis-group clean distclean
 
-all: homotopy analysis-group fun-analysis
+all: homotopy analysis-group fun-analysis projet
 
 analysis-group: analysis-group/analysis-group.pdf
 fun-analysis: fun-analysis/fun-analysis.pdf
